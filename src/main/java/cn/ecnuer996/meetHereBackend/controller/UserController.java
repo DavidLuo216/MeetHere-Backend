@@ -5,10 +5,13 @@ import cn.ecnuer996.meetHereBackend.model.UserAuth;
 import cn.ecnuer996.meetHereBackend.service.UserAuthService;
 import cn.ecnuer996.meetHereBackend.service.UserService;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Api(tags = "用户相关接口")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -17,7 +20,8 @@ public class UserController {
 
     String urlPrefix="https://ecnuer996.cn/images";
 
-    @RequestMapping(value="/sign-in",method=RequestMethod.POST)
+    @ApiOperation("用户登录接口")
+    @PostMapping(value="/sign-in")
     public @ResponseBody JSONObject signIn(@RequestBody JSONObject postBody){
         String identifier=postBody.getString("id");
         String credential=postBody.getString("credential");
@@ -49,7 +53,8 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value="/sign-up",method=RequestMethod.POST)
+    @ApiOperation("用户注册接口")
+    @PostMapping(value="/sign-up")
     public @ResponseBody JSONObject signUp(@RequestBody JSONObject postBody){
         JSONObject response=new JSONObject();
         String email=postBody.getString("email");
@@ -109,7 +114,8 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value="/update-user-info",method=RequestMethod.POST)
+    @ApiOperation("更新用户信息接口")
+    @PostMapping(value="/update-user-info")
     public @ResponseBody JSONObject updateUserInfo(@RequestBody User user){
         JSONObject response=new JSONObject();
         if(user.getId()==null || userService.getUserById(user.getId())==null){

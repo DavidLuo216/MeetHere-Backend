@@ -8,14 +8,10 @@ import cn.ecnuer996.meetHereBackend.service.VenueService;
 import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
 import cn.ecnuer996.meetHereBackend.util.ReservationState;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-//import javax.persistence.criteria.CriteriaBuilder;
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +20,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 @RestController
+@Api(tags = "预定相关接口")
 public class ReservationController {
 
     @Autowired
@@ -46,33 +43,34 @@ public class ReservationController {
     }
     /* Change Date To String Finish */
 
-    @RequestMapping(value="/venue")
-    public ArrayList<Venue> getVenues(HttpServletRequest request){
-        String venue_name = request.getParameter("name");
-        return venueService.getVenueByName("%" + venue_name + "%");
+    @ApiOperation("根据场馆名模糊查询场馆接口")
+    @GetMapping(value="/venue")
+    public ArrayList<Venue> getVenues(@RequestParam("name") String name){
+        return venueService.getVenueByName("%" + name + "%");
     }
 
-    @RequestMapping(value="/site")
-    public ArrayList<Site> getSites(HttpServletRequest request){
-        int venue_id = Integer.parseInt(request.getParameter("venue_id"));
-        return venueService.getSiteByVenueId(venue_id);
+    @ApiOperation("通过venue_id查询某个场馆的所有场地接口")
+    @GetMapping(value="/site")
+    public ArrayList<Site> getSites(@RequestParam("venue_id")Integer venueId){
+        return venueService.getSiteByVenueId(venueId);
     }
 
-    @RequestMapping(value="all-venues")
+    @ApiOperation("查询所有场馆信息接口")
+    @GetMapping(value="all-venues")
     public JSONObject getAllVenues(){
         return venueService.getAllVenues();
     }
 
-    @RequestMapping(value="venue-detail")
-    public JSONObject getVenueDetail(HttpServletRequest request){
-        int venue_id = Integer.parseInt(request.getParameter("venue_id"));
-        return venueService.getVenueDetail(venue_id);
+    @ApiOperation("根据ID查询场馆详情接口")
+    @GetMapping(value="venue-detail")
+    public JSONObject getVenueDetail(@RequestParam("venue_id")Integer venueId){
+        return venueService.getVenueDetail(venueId);
     }
 
-    @RequestMapping(value="/site-time-list")
-    public JSONObject getSiteTimeList(HttpServletRequest request){
-        int siteId=Integer.parseInt(request.getParameter("site_id"));
-        String date=request.getParameter("book_date");
+    @ApiOperation("根据场地ID和日期查询时间段信息接口")
+    @GetMapping(value="/site-time-list")
+    public JSONObject getSiteTimeList(@RequestParam("site_id")Integer siteId,
+                                      @RequestParam("book_date")String date){
         JSONObject response=new JSONObject();
         try{
             response.put("date",venueService.getSiteTimes(siteId,date));
@@ -85,7 +83,8 @@ public class ReservationController {
         return response;
     }
 
-    @RequestMapping(value="/reserve",method= RequestMethod.POST)
+    @ApiOperation("提交预定信息接口")
+    @PostMapping(value="/reserve")
     public JSONObject generateReservation(@RequestBody JSONObject postBody){
         int siteId=postBody.getInteger("siteId");
         int userId=postBody.getInteger("userId");
@@ -136,12 +135,12 @@ public class ReservationController {
         return response;
     }
 
-    @RequestMapping(value="/orders")
-    public JSONObject searchOrders(HttpServletRequest request) {
+    @ApiOperation("分页查询用户订单列表接口")
+    @GetMapping(value="/orders")
+    public JSONObject searchOrders(@RequestParam("id")Integer userId,
+                                   @RequestParam("segment")Integer segment,
+                                   @RequestParam("page")Integer page) {
         JSONObject response = new JSONObject();
-        int userId = Integer.parseInt(request.getParameter("id"));
-        int segment = Integer.parseInt(request.getParameter("segment"));
-        int page = Integer.parseInt(request.getParameter("page"));
         User user = userService.getUserById(userId);
         if(user.getId() < 0){
             response.put("code",250);
