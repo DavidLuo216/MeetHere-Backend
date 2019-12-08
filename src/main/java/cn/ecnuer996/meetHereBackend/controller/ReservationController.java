@@ -9,6 +9,8 @@ import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
 import cn.ecnuer996.meetHereBackend.util.ReservationState;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,12 +46,14 @@ public class ReservationController {
     /* Change Date To String Finish */
 
     @ApiOperation("根据场馆名模糊查询场馆接口")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "name", value = "场馆名称关键词", required = true) })
     @GetMapping(value="/venue")
     public ArrayList<Venue> getVenues(@RequestParam("name") String name){
         return venueService.getVenueByName("%" + name + "%");
     }
 
     @ApiOperation("通过venue_id查询某个场馆的所有场地接口")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "venue_id", value = "场馆id", required = true) })
     @GetMapping(value="/site")
     public ArrayList<Site> getSites(@RequestParam("venue_id")Integer venueId){
         return venueService.getSiteByVenueId(venueId);
@@ -62,12 +66,15 @@ public class ReservationController {
     }
 
     @ApiOperation("根据ID查询场馆详情接口")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "venue_id", value = "场馆id", required = true) })
     @GetMapping(value="venue-detail")
     public JSONObject getVenueDetail(@RequestParam("venue_id")Integer venueId){
         return venueService.getVenueDetail(venueId);
     }
 
     @ApiOperation("根据场地ID和日期查询时间段信息接口")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "site_id", value = "场地id", required = true),
+                         @ApiImplicitParam(name = "book_date", value = "日期", required = true)})
     @GetMapping(value="/site-time-list")
     public JSONObject getSiteTimeList(@RequestParam("site_id")Integer siteId,
                                       @RequestParam("book_date")String date){
@@ -95,11 +102,13 @@ public class ReservationController {
         // 验证想预约的时段是否已被预约
         try{
             SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
-            formatter.setTimeZone(TimeZone.getTimeZone("GMT+0")); //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
+            //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
+            formatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
             Date realDate=formatter.parse(date);
             int[] bookList=venueService.getReservationsBySiteIdAndDate(siteId,realDate);
             for(int i=beginPeriod;i<endPeriod;++i){
-                if(bookList[i]!=0){ //时段不可预约
+                //时段不可预约
+                if(bookList[i]!=0){
                     if(bookList[i]==1){
                         response.put("code",500);
                         response.put("message","您所选的时段已被预约，请重新选择预约时间！");
@@ -136,6 +145,9 @@ public class ReservationController {
     }
 
     @ApiOperation("分页查询用户订单列表接口")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "用户id", required = true),
+                         @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
+                         @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)})
     @GetMapping(value="/orders")
     public JSONObject searchOrders(@RequestParam("id")Integer userId,
                                    @RequestParam("segment")Integer segment,

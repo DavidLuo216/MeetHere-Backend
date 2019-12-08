@@ -32,9 +32,11 @@ public class UserController {
             response.put("code",500);
             response.put("message","用户不存在！");
             return response;
-        }else if(!userAuth.getCredential().equals(credential)){ //因为没有邮箱服务和短信服务，
-                                                             // 所以邮箱登录方式和短信登录方式的验证码只能静态存储在数据库
-            response.put("code",400);                        // 简单通过判断字符串是否相等来验证验证码
+        }else if(!userAuth.getCredential().equals(credential)){
+            //因为没有邮箱服务和短信服务，
+            // 所以邮箱登录方式和短信登录方式的验证码只能静态存储在数据库
+            // 简单通过判断字符串是否相等来验证验证码
+            response.put("code",400);
             if(signInMethod.equals("nickname")){
                 response.put("message","密码错误！");
             }else if(signInMethod.equals("phone")){

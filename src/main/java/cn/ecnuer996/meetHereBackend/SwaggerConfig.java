@@ -17,6 +17,7 @@ public class SwaggerConfig {
     @Bean
     public Docket api(){
         return new Docket(DocumentationType.SWAGGER_2)
+//                .host("ecnuer996.cn/MeetHere/api")  //部署时为了保证swagger可用需要设置host
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
