@@ -149,7 +149,7 @@ public class ReservationController {
         }
         else{
             List<Reservation> pre_reservations = reservationService.getReservationByUserId(userId);
-            int num_of_pages = (int) Math.ceil(pre_reservations.size() / (double) segment);
+            int num_of_pages = Math.max((int) Math.ceil(pre_reservations.size() / (double) segment), 1);
             List<Reservation> reservations = new ArrayList<>();
             for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, pre_reservations.size()); ++i){
                 reservations.add(pre_reservations.get(i));
