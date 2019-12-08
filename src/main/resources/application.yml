@@ -9,4 +9,7 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: cn.ecnuer996.meetHereBackend.model
 
+server:
+  port: 8756
+
 
