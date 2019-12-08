@@ -1,7 +1,6 @@
 package cn.ecnuer996.meetHereBackend.dao;
 
 import cn.ecnuer996.meetHereBackend.model.Site;
-
 import java.util.ArrayList;
 
 public interface SiteMapper {

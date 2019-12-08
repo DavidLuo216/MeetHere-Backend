@@ -140,15 +140,23 @@ public class ReservationController {
     public JSONObject searchOrders(HttpServletRequest request) {
         JSONObject response = new JSONObject();
         int userId = Integer.parseInt(request.getParameter("id"));
+        int segment = Integer.parseInt(request.getParameter("segment"));
+        int page = Integer.parseInt(request.getParameter("page"));
         User user = userService.getUserById(userId);
         if(user.getId() < 0){
             response.put("code",250);
             response.put("message","你传了个假用户,拒绝");
         }
         else{
-            List<Reservation> reservations = reservationService.getReservationByUserId(userId);
+            List<Reservation> pre_reservations = reservationService.getReservationByUserId(userId);
+            int num_of_pages = (int) Math.ceil(pre_reservations.size() / (double) segment);
+            List<Reservation> reservations = new ArrayList<>();
+            for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, pre_reservations.size()); ++i){
+                reservations.add(pre_reservations.get(i));
+            }
             response.put("code",200);
             response.put("messages","查询成功");
+            response.put("num_of_pages", num_of_pages);
             ArrayList<ReservationDetail> result = new ArrayList<>();
             int len = reservations.size();
             for(int i = 0; i < len; i++) {

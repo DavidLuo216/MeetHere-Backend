@@ -1,7 +1,6 @@
 package cn.ecnuer996.meetHereBackend.dao;
 
 import cn.ecnuer996.meetHereBackend.model.VenueImage;
-
 import java.util.List;
 
 public interface VenueImageMapper {
