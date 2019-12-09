@@ -14,13 +14,13 @@
     select
     <include refid="Base_Column_List" />
     from user_auth2
-    where identity_type = 'nickname' and identifier = #{0}
+    where identity_type = 'nickname' and identifier = #{nickname}
   </select>
   <select id="loginJudge" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from user_auth2
-    where identity_type = 'nickname' and identifier = #{0} and credential = #{1}
+    where identity_type = 'nickname' and identifier = #{nickname} and credential = #{password}
   </select>
   <select id="selectNicknameLoginAuth" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -32,7 +32,7 @@
     select
     <include refid="Base_Column_List" />
     from user_auth2
-    where identity_type = #{0} and identifier = #{1}
+    where identity_type = #{method} and identifier = #{identifier}
   </select>
   <insert id="insert" parameterType="cn.ecnuer996.meetHereBackend.model.UserAuth">
     insert into user_auth2 (user_id, identity_type, identifier, 

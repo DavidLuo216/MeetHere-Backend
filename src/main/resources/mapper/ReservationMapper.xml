@@ -32,13 +32,13 @@
     select
     <include refid="Base_Column_List" />
     from reservation
-    where site_id = #{0,jdbcType=INTEGER} and date=#{1,jdbcType=DATE}
+    where site_id = #{siteId,jdbcType=INTEGER} and date=#{date,jdbcType=DATE}
   </select>
   <select id="selectLatestReservationByUserId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from reservation
-    where user_id = #{0,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=INTEGER}
     order by id desc limit 1
   </select>
 <!--  <select id="selectByUserIdAndBookTime" resultMap="BaseResultMap">-->
