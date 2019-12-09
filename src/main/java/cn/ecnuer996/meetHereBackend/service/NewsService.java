@@ -13,7 +13,7 @@ public class NewsService {
     private NewsMapper newsDao;
 
     public void addNews(News news) {
-        newsDao.insertSelective(news);
+        newsDao.insert(news);
     }
 
     public ArrayList<News> getAllNews() {

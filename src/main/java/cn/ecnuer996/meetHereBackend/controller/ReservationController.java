@@ -30,14 +30,26 @@ import java.util.TimeZone;
 @Api(tags = "预定相关接口")
 public class ReservationController {
 
-    @Autowired
     private UserService userService;
-    @Autowired
     private SiteService siteService;
-    @Autowired
     private VenueService venueService;
-    @Autowired
     private ReservationService reservationService;
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+    @Autowired
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+    @Autowired
+    public void setVenueService(VenueService venueService) {
+        this.venueService = venueService;
+    }
+    @Autowired
+    public void setReservationService(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     String urlPrefix="https://ecnuer996.cn/images";
 

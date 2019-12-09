@@ -19,8 +19,12 @@ import java.util.ArrayList;
 @RestController
 @Api(tags = "新闻相关接口")
 public class NewsController {
-    @Autowired
     public NewsService newsService;
+
+    @Autowired
+    public void setNewsService(NewsService newsService) {
+        this.newsService = newsService;
+    }
 
     @ApiOperation("分页查询所有新闻信息")
     @ApiImplicitParams({ @ApiImplicitParam(name = "segment", value = "每页条数", required = true),

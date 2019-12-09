@@ -13,10 +13,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Api(tags = "用户相关接口")
 public class UserController {
-    @Autowired
     private UserService userService;
-    @Autowired
     private UserAuthService userAuthService;
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+    @Autowired
+    public void setUserAuthService(UserAuthService userAuthService) {
+        this.userAuthService = userAuthService;
+    }
 
     String urlPrefix="https://ecnuer996.cn/images";
 
@@ -79,7 +86,8 @@ public class UserController {
             User user=new User();
             user.setId(null);
             user.setNickname(nickname);
-            user.setAvatar("/user-avatars/default.jpg"); // 默认头像
+            // 默认头像
+            user.setAvatar("/user-avatars/default.jpg");
             user.setEmail(email);
             user.setPhone(phone);
             userService.insert(user);
