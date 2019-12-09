@@ -1,11 +1,15 @@
 package cn.ecnuer996.meetHereBackend.controller;
 
-import cn.ecnuer996.meetHereBackend.model.*;
+import cn.ecnuer996.meetHereBackend.model.Reservation;
+import cn.ecnuer996.meetHereBackend.model.Site;
+import cn.ecnuer996.meetHereBackend.model.User;
+import cn.ecnuer996.meetHereBackend.model.Venue;
 import cn.ecnuer996.meetHereBackend.service.ReservationService;
-import cn.ecnuer996.meetHereBackend.service.UserService;
 import cn.ecnuer996.meetHereBackend.service.SiteService;
+import cn.ecnuer996.meetHereBackend.service.UserService;
 import cn.ecnuer996.meetHereBackend.service.VenueService;
 import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
+import cn.ecnuer996.meetHereBackend.transfer.VenueInList;
 import cn.ecnuer996.meetHereBackend.util.ReservationState;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -14,6 +18,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,10 +64,24 @@ public class ReservationController {
         return venueService.getSiteByVenueId(venueId);
     }
 
-    @ApiOperation("查询所有场馆信息接口")
-    @GetMapping(value="all-venues")
-    public JSONObject getAllVenues(){
-        return venueService.getAllVenues();
+    @ApiOperation("分页查询所有场馆信息")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
+                         @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)})
+    @GetMapping(value="venues")
+    public JSONObject getAllVenues(@RequestParam("segment")Integer segment,
+                                   @RequestParam("page")Integer page){
+        JSONObject response = new JSONObject();
+        List<VenueInList> pre_venues = venueService.getAllVenues();
+        int num_of_pages = Math.max((int) Math.ceil(pre_venues.size() / (double) segment), 1);
+        ArrayList<VenueInList> venues = new ArrayList<>();
+        for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, pre_venues.size()); ++i){
+            venues.add(pre_venues.get(i));
+        }
+        response.put("code",200);
+        response.put("messages","查询成功");
+        response.put("num_of_pages", num_of_pages);
+        response.put("result",venues);
+        return response;
     }
 
     @ApiOperation("根据ID查询场馆详情接口")

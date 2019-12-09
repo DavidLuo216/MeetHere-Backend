@@ -50,9 +50,9 @@ public class VenueService {
         return sites;
     }
 
-    public JSONObject getAllVenues(){
+    public ArrayList<VenueInList> getAllVenues(){
         List<Venue> rawVenues=venueDao.selectAllVenues();
-        List<VenueInList> listVenues=new ArrayList<VenueInList>();
+        List<VenueInList> listVenues=new ArrayList<>();
         SimpleDateFormat formatter=new SimpleDateFormat("HH:mm");
         formatter.setTimeZone(TimeZone.getTimeZone("GMT+0")); //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
         for(Venue venue:rawVenues){
@@ -65,9 +65,7 @@ public class VenueService {
             venueItem.cover=urlPrefix+venueImageDao.getVenueCoverByVenueId(venue.getId());
             listVenues.add(venueItem);
         }
-        JSONObject venues=new JSONObject();
-        venues.put("venues",listVenues);
-        return venues;
+        return (ArrayList<VenueInList>) listVenues;
     }
 
     public JSONObject getVenueDetail(int venue_id){
