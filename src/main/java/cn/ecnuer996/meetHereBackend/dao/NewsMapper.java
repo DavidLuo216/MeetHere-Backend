@@ -2,6 +2,8 @@ package cn.ecnuer996.meetHereBackend.dao;
 
 import cn.ecnuer996.meetHereBackend.model.News;
 
+import java.util.ArrayList;
+
 public interface NewsMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -16,4 +18,6 @@ public interface NewsMapper {
     int updateByPrimaryKeyWithBLOBs(News record);
 
     int updateByPrimaryKey(News record);
+
+    ArrayList<News> selectAllVenues();
 }

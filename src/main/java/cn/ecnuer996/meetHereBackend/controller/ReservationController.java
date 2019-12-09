@@ -70,13 +70,13 @@ public class ReservationController {
     @GetMapping(value="venues")
     public JSONObject getAllVenues(@RequestParam("segment")Integer segment,
                                    @RequestParam("page")Integer page){
-        JSONObject response = new JSONObject();
         List<VenueInList> pre_venues = venueService.getAllVenues();
         int num_of_pages = Math.max((int) Math.ceil(pre_venues.size() / (double) segment), 1);
         ArrayList<VenueInList> venues = new ArrayList<>();
         for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, pre_venues.size()); ++i){
             venues.add(pre_venues.get(i));
         }
+        JSONObject response = new JSONObject();
         response.put("code",200);
         response.put("messages","查询成功");
         response.put("num_of_pages", num_of_pages);

@@ -11,7 +11,7 @@ public class News {
 
     private String title;
 
-    private byte[] content;
+    private String content;
 
     public Integer getId() {
         return id;
@@ -45,11 +45,11 @@ public class News {
         this.title = title == null ? null : title.trim();
     }
 
-    public byte[] getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(String content) {
         this.content = content;
     }
 }
