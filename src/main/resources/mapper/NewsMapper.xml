@@ -48,7 +48,7 @@
         id,
       </if>
       <if test="managerId != null">
-        manager_id,
+        managerId,
       </if>
       <if test="time != null">
         time,

@@ -19,5 +19,5 @@ public interface NewsMapper {
 
     int updateByPrimaryKey(News record);
 
-    ArrayList<News> selectAllVenues();
+    ArrayList<News> selectAllNews();
 }

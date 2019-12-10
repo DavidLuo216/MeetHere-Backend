@@ -47,17 +47,17 @@ public class NewsController {
     }
 
     @ApiOperation("新增新闻")
-    @ApiImplicitParams({ @ApiImplicitParam(name = "manager_id", value = "管理员", required = true),
+    @ApiImplicitParams({ @ApiImplicitParam(name = "managerId", value = "管理员", required = true),
                          @ApiImplicitParam(name = "time", value = "时间", required = true),
                          @ApiImplicitParam(name = "title", value = "标题", required = true),
                          @ApiImplicitParam(name = "content", value = "内容", required = true)})
     @GetMapping(value="add_news")
-    public JSONObject addNews(@RequestParam("manager_id")Integer manager,
+    public JSONObject addNews(@RequestParam("managerId")Integer managerId,
                               @RequestParam("time")String time,
                               @RequestParam("title")String title,
                               @RequestParam("content")String content){
         News news = new News();
-        news.setManagerId(manager);
+        news.setManagerId(managerId);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             news.setTime(format.parse(time));

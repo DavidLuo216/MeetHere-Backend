@@ -17,7 +17,6 @@ public class NewsService {
     }
 
     public ArrayList<News> getAllNews() {
-        //return new ArrayList<>();
-        return newsDao.selectAllVenues();
+        return newsDao.selectAllNews();
     }
 }
