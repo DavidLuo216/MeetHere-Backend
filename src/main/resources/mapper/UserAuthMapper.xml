@@ -16,6 +16,24 @@
     from user_auth2
     where identity_type = 'nickname' and identifier = #{nickname}
   </select>
+  <select id="getUserAuthById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_auth2
+    where user_id = #{user_id,jdbcType=INTEGER}
+  </select>
+  <select id="getLegalUserAuthById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_auth2
+    where user_id = #{user_id,jdbcType=INTEGER} and identity_type != 'forbid19260817'
+  </select>
+  <select id="getIllegalUserAuthById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_auth2
+    where user_id = #{user_id,jdbcType=INTEGER} and identity_type = 'forbid19260817'
+  </select>
   <select id="loginJudge" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -71,4 +89,14 @@
       </if>
     </trim>
   </insert>
+  <update id="forbidUserById" parameterType="java.lang.Integer">
+    update user_auth2
+    set identity_type = 'forbid19260817'
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="permitUserById" parameterType="java.lang.Integer">
+    update user_auth2
+    set identity_type = 'nickname'
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
 </mapper>

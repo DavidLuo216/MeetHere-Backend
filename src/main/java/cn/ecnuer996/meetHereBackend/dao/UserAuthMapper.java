@@ -15,4 +15,14 @@ public interface UserAuthMapper {
     UserAuth selectNicknameLoginAuth(Integer id);
     //根据登录方式和对应ID来获取验证信息
     UserAuth selectBySignInMethod(String method,String identifier);
+
+    UserAuth getUserAuthById(int user_id);
+
+    UserAuth getLegalUserAuthById(int user_id);
+
+    UserAuth getIllegalUserAuthById(int user_id);
+
+    void forbidUserById(int user_id);
+
+    void permitUserById(int user_id);
 }

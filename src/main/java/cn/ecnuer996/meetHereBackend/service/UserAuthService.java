@@ -32,4 +32,23 @@ public class UserAuthService {
     public UserAuth getBySignInMethod(String method,String identifier){
         return userAuthDao.selectBySignInMethod(method,identifier);
     }
+
+    public boolean forbidUserById(int user_id) {
+        UserAuth userAuth = userAuthDao.getLegalUserAuthById(user_id);
+        if(userAuth == null) return false;
+        userAuthDao.forbidUserById(userAuth.getUserId());
+        return true;
+    }
+
+    public boolean permitUserById(int user_id) {
+        UserAuth userAuth = userAuthDao.getIllegalUserAuthById(user_id);
+        if(userAuth == null) return false;
+        userAuthDao.permitUserById(userAuth.getUserId());
+        return true;
+    }
+
+    public String getIdentityType(int user_id) {
+        UserAuth userAuth = userAuthDao.getUserAuthById(user_id);
+        return userAuth.getIdentityType();
+    }
 }

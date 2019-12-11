@@ -79,7 +79,7 @@ public class ReservationController {
     @ApiOperation("分页查询所有场馆信息")
     @ApiImplicitParams({ @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
                          @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)})
-    @GetMapping(value="venues")
+    @GetMapping(value="/venues")
     public JSONObject getAllVenues(@RequestParam("segment")Integer segment,
                                    @RequestParam("page")Integer page){
         List<VenueInList> pre_venues = venueService.getAllVenues();
@@ -98,7 +98,7 @@ public class ReservationController {
 
     @ApiOperation("根据ID查询场馆详情接口")
     @ApiImplicitParams({ @ApiImplicitParam(name = "venue_id", value = "场馆id", required = true) })
-    @GetMapping(value="venue-detail")
+    @GetMapping(value="/venue-detail")
     public JSONObject getVenueDetail(@RequestParam("venue_id")Integer venueId){
         return venueService.getVenueDetail(venueId);
     }

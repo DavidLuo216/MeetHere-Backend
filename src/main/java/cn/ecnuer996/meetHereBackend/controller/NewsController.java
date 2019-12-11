@@ -29,7 +29,7 @@ public class NewsController {
     @ApiOperation("分页查询所有新闻信息")
     @ApiImplicitParams({ @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
                          @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)})
-    @GetMapping(value="news")
+    @GetMapping(value="/news")
     public JSONObject getAllNews(@RequestParam("segment")Integer segment,
                                    @RequestParam("page")Integer page){
         ArrayList<News> pre_news = newsService.getAllNews();
@@ -51,7 +51,7 @@ public class NewsController {
                          @ApiImplicitParam(name = "time", value = "时间", required = true),
                          @ApiImplicitParam(name = "title", value = "标题", required = true),
                          @ApiImplicitParam(name = "content", value = "内容", required = true)})
-    @GetMapping(value="add_news")
+    @GetMapping(value="/add_news")
     public JSONObject addNews(@RequestParam("managerId")Integer managerId,
                               @RequestParam("time")String time,
                               @RequestParam("title")String title,

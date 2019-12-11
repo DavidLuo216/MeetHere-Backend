@@ -5,6 +5,8 @@ import cn.ecnuer996.meetHereBackend.dao.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 
 @Service("UserService")
 public class UserService {
@@ -24,4 +26,7 @@ public class UserService {
         return userDao.insertSelective(user);
     }
 
+    public ArrayList<User> getAllUsers() {
+        return userDao.selectAllUsers();
+    }
 }
