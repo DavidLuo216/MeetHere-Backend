@@ -83,6 +83,7 @@ public class VenueController {
             venueImageDao.insert(venueImage);
         }
         response.put("venueId",venueId);
+        response.put("code",200);
         response.put("message","请求成功");
         return response;
     }
@@ -106,6 +107,8 @@ public class VenueController {
         venue.setBeginTime(timeFormat.parse(beginTime));
         venue.setEndTime(timeFormat.parse(endTime));
         venueDao.updateByPrimaryKeySelective(venue);
+        response.put("code",200);
+        response.put("message","请求成功");
         return response;
     }
 
@@ -132,6 +135,8 @@ public class VenueController {
         site.setPrice(price);
         site.setImage(imageName);
         siteDao.insert(site);
+        response.put("code",200);
+        response.put("message","请求成功");
         return response;
     }
 
@@ -168,6 +173,8 @@ public class VenueController {
         site.setName(name);
         site.setPrice(price);
         siteDao.updateByPrimaryKey(site);
+        response.put("code",200);
+        response.put("message","请求成功");
         return response;
     }
 
@@ -185,6 +192,8 @@ public class VenueController {
             }
         }
         siteDao.deleteByPrimaryKey(id);
+        response.put("code",200);
+        response.put("message","请求成功");
         return response;
     }
 }
