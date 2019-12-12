@@ -1,9 +1,12 @@
 package cn.ecnuer996.meetHereBackend.dao;
 
 import cn.ecnuer996.meetHereBackend.model.Venue;
+import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public interface VenueMapper {
     int deleteByPrimaryKey(Integer id);
 

@@ -1,9 +1,12 @@
 package cn.ecnuer996.meetHereBackend.dao;
 
 import cn.ecnuer996.meetHereBackend.model.Reservation;
+import org.springframework.stereotype.Repository;
+
 import java.util.Date;
 import java.util.List;
 
+@Repository
 public interface ReservationMapper {
     int deleteByPrimaryKey(Integer id);
 

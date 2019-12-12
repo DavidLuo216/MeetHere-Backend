@@ -110,18 +110,6 @@ public class UserController {
             nicknameAuth.setCredential(password);
             userAuthService.insert(nicknameAuth);
 
-//            phoneAuth.setUserId(user_id);
-//            phoneAuth.setIdentityType("phone");
-//            phoneAuth.setIdentifier(phone);
-//            phoneAuth.setCredential("null");
-//            userAuthService.insert(phoneAuth);
-//
-//            emailAuth.setUserId(user_id);
-//            emailAuth.setIdentityType("email");
-//            emailAuth.setIdentifier(email);
-//            emailAuth.setCredential("null");
-//            userAuthService.insert(emailAuth);
-
             response.put("code",200);
             response.put("message","注册成功！");
             response.put("data",user);

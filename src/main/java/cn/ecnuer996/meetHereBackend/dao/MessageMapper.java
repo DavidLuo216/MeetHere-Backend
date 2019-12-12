@@ -1,7 +1,9 @@
 package cn.ecnuer996.meetHereBackend.dao;
 
 import cn.ecnuer996.meetHereBackend.model.Message;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface MessageMapper {
     int deleteByPrimaryKey(Integer id);
 

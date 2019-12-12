@@ -1,7 +1,9 @@
 package cn.ecnuer996.meetHereBackend.dao;
 
 import cn.ecnuer996.meetHereBackend.model.UserAuth;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserAuthMapper {
     int insert(UserAuth record);
 

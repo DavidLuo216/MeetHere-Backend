@@ -9,6 +9,7 @@ import cn.ecnuer996.meetHereBackend.dao.VenueImageMapper;
 import cn.ecnuer996.meetHereBackend.dao.VenueMapper;
 import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
 import cn.ecnuer996.meetHereBackend.transfer.VenueInList;
+import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import cn.ecnuer996.meetHereBackend.util.ReservationState;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,10 @@ public class VenueService {
     @Autowired
     private ReservationMapper reservationDao;
 
-    private String urlPrefix="https://ecnuer996.cn/images";
-
-    final static int ReservationPeriod=30; // 预定的最小时间单元，单位为分钟
+    /**
+     * 预定的最小时间单元，单位为分钟
+     */
+    final static int ReservationPeriod=30;
 
     public Venue getVenueById(int id) {
         return venueDao.selectByPrimaryKey(id);
@@ -45,7 +47,7 @@ public class VenueService {
     public ArrayList<Site> getSiteByVenueId(int venue_id){
         ArrayList<Site> sites=siteDao.selectByVenueId(venue_id);
         for(Site site:sites){
-            site.setImage(urlPrefix+site.getImage());
+            site.setImage(FilePathUtil.URL_SITE_IMAGE_PREFIX +site.getImage());
         }
         return sites;
     }
@@ -54,7 +56,7 @@ public class VenueService {
         List<Venue> rawVenues=venueDao.selectAllVenues();
         List<VenueInList> listVenues=new ArrayList<>();
         SimpleDateFormat formatter=new SimpleDateFormat("HH:mm");
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0")); //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
         for(Venue venue:rawVenues){
             VenueInList venueItem=new VenueInList();
             venueItem.id=venue.getId();
@@ -62,7 +64,7 @@ public class VenueService {
             venueItem.address=venue.getAddress();
             venueItem.beginTime=formatter.format(venue.getBeginTime());
             venueItem.endTime=formatter.format(venue.getEndTime());
-            venueItem.cover=urlPrefix+venueImageDao.getVenueCoverByVenueId(venue.getId());
+            venueItem.cover=FilePathUtil.URL_VENUE_COVER_PREFIX+venueImageDao.getVenueCoverByVenueId(venue.getId());
             listVenues.add(venueItem);
         }
         return (ArrayList<VenueInList>) listVenues;
@@ -72,11 +74,12 @@ public class VenueService {
         Venue venue=venueDao.selectByPrimaryKey(venue_id);
         List<String> images=venueImageDao.getVenueImagesByVenueId(venue_id);
         for(int i=0;i<images.size();++i){
-            images.set(i,urlPrefix+images.get(i));
+            images.set(i,FilePathUtil.URL_VENUE_COVER_PREFIX+images.get(i));
         }
         JSONObject venueDetail=new JSONObject();
         SimpleDateFormat formatter=new SimpleDateFormat("HH:mm");
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0")); //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
+        //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
         venueDetail.put("id",venue.getId());
         venueDetail.put("name",venue.getName());
         venueDetail.put("address",venue.getAddress());
@@ -92,14 +95,13 @@ public class VenueService {
 
     public JSONObject getSiteTimes(int siteId,String date) throws ParseException {
         SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0")); //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
+        //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
         Date realDate=formatter.parse(date);
         List<Reservation> reservations=reservationDao.selectBySiteIdAndDate(siteId,realDate);
-        //reservations.sort(new ReservationComparator()); // 按照预约开始时段给所有预约升序排序
 
         Site site=siteDao.selectByPrimaryKey(siteId);
         Venue venue=venueDao.selectByPrimaryKey(site.getVenueId());
-//        int minutes=(int)((venue.getEndTime().getTime()-venue.getBeginTime().getTime())/60000);
 
         int beginMinutes=(int)((((venue.getBeginTime().getTime())/60000)%1440));
         int endMinutes=(int)((((venue.getEndTime().getTime())/60000)%1440));
@@ -115,24 +117,14 @@ public class VenueService {
         }
         for(Reservation r:reservations){
             for(int i=r.getBeginTime();i<=r.getEndTime();++i){
-                bookableList[i]=1; // 标记此时段已被预约
+                // 标记此时段已被预约
+                bookableList[i]=1;
             }
         }
-
-//        boolean[] timeList=new boolean[minutes/ReservationPeriod]; //标记各时段是否被预约
-//        for(int i=0;i<timeList.length;++i)
-//            timeList[i]=true;
-//
-//        for(Reservation r:reservations){
-//            for(int i=r.getBeginTime();i<r.getEndTime();++i){
-//                timeList[i]=false; // 标记此时段已被预约
-//            }
-//        }
         JSONObject ret=new JSONObject();
         List<JSONObject> siteTimes=new ArrayList<JSONObject>();
         for(int i=0;i<bookableList.length;++i){
             JSONObject siteTime=new JSONObject();
-//            siteTime.put("period",printPeriod(beginMinutes,i));
             siteTime.put("period",simplePrintPeriod(i));
             siteTime.put("bookable",bookableList[i]);
             siteTime.put("periodId",i);
@@ -143,12 +135,16 @@ public class VenueService {
         return ret;
     }
 
-    // 根据要预定的场地ID和日期返回一个布尔值列表表示各时段是否可预约
+    /**
+     * 根据要预定的场地ID和日期返回一个布尔值列表表示各时段是否可预约
+     * @param siteId
+     * @param date
+     * @return
+     */
     public int[] getReservationsBySiteIdAndDate(int siteId,Date date){
         List<Reservation> reservations=reservationDao.selectBySiteIdAndDate(siteId,date);
         Site site=siteDao.selectByPrimaryKey(siteId);
         Venue venue=venueDao.selectByPrimaryKey(site.getVenueId());
-//        int minutes=(int)((venue.getEndTime().getTime()-venue.getBeginTime().getTime())/60000); // 场馆开馆的分钟数
 
         int beginMinutes=(int)((((venue.getBeginTime().getTime())/60000)%1440));
         int endMinutes=(int)((((venue.getEndTime().getTime())/60000)%1440));
@@ -164,21 +160,11 @@ public class VenueService {
         }
         for(Reservation r:reservations){
             for(int i=r.getBeginTime();i<r.getEndTime();++i){
-                bookableList[i]=1; // 标记此时段已被预约
+                // 标记此时段已被预约
+                bookableList[i]=1;
             }
         }
         return bookableList;
-
-//        List<Boolean> timeList=new ArrayList<>(); //标记各时段是否被预约
-//        for(int i=0;i<minutes/ReservationPeriod;++i)
-//            timeList.add(true);
-
-//        for(Reservation r:reservations){
-//            for(int i=r.getBeginTime();i<r.getEndTime();++i){
-//                timeList.set(i,false); // 标记此时段已被预约
-//            }
-//        }
-//        return timeList;
     }
 
     public Float calculatePrice(int siteId,int periodNum){
@@ -193,83 +179,43 @@ public class VenueService {
         ReservationDetail reservationDetail=new ReservationDetail();
         Reservation latestReservation=reservationDao.selectLatestReservationByUserId(userId);
         SimpleDateFormat dateTimeFormatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateTimeFormatter.setTimeZone(TimeZone.getTimeZone("GMT+8")); //mysql时区问题尚未解决，只能将日期按照GMT+8时区解析
+        //mysql时区问题尚未解决，只能将日期按照GMT+8时区解析
+        dateTimeFormatter.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         SimpleDateFormat dateFormatter=new SimpleDateFormat("yyyy-MM-dd");
-        dateFormatter.setTimeZone(TimeZone.getTimeZone("GMT+0")); //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
         Site site=siteDao.selectByPrimaryKey(latestReservation.getSiteId());
         Venue venue=venueDao.selectByPrimaryKey(site.getVenueId());
 
         reservationDetail.setVenueName(venue.getName());
         reservationDetail.setSiteName(site.getName());
-        reservationDetail.setSiteImage(urlPrefix+site.getImage());
+        reservationDetail.setSiteImage(FilePathUtil.URL_SITE_IMAGE_PREFIX+site.getImage());
         reservationDetail.setBookTime(dateTimeFormatter.format(latestReservation.getBookTime()));
         reservationDetail.setCost(latestReservation.getCost());
         reservationDetail.setReserveDate(dateFormatter.format(latestReservation.getDate()));
         reservationDetail.setState(ReservationState.states.get(latestReservation.getSiteId()));
 
-//        int beginMinutes=(int)((((venue.getBeginTime().getTime())/60000)%1440));
-//        reservationDetail.setBeginTime(printTime(beginMinutes,latestReservation.getBeginTime()));
-//        reservationDetail.setEndTime(printTime(beginMinutes,latestReservation.getEndTime()));
         reservationDetail.setBeginTime(simplePrintPeriod(latestReservation.getBeginTime()));
         reservationDetail.setEndTime(simplePrintPeriod(latestReservation.getEndTime()+1));
 
         return reservationDetail;
-        //return reservationDao.selectLatestReservationByUserId(userId);
-    }
-//    public Reservation getReservationByUserIdAndBookTime(int userId,Date date){
-//        return reservationDao.selectByUserIdAndBookTime(userId,date);
-//    }
-
-    private String printPeriod(int beginMinutes,int periodNum){ // 仅针对时间段单元30分钟时
-        int totalMins=beginMinutes+periodNum*ReservationPeriod;
-        int hour=totalMins/60;
-        int min=totalMins%60;
-        if(min==30)
-            return hour+":30~"+(hour+1)+":00";
-        else
-            return hour+":00"+"~"+hour+":30";
-//        int endMins=totalMins+30;
-//        int endHour=endMins/60;
-//        int endMin=endMins%60;
-//        return hour+":"+min+"~"+endHour+":"+endMin;
-    }
-
-    private String printTime(int beginMinutes,int periodNum){ // 仅针对时间段单元30分钟时
-        int totalMins=beginMinutes+periodNum*ReservationPeriod;
-        int hour=totalMins/60;
-        int min=totalMins%60;
-        if(min==30)
-            return hour+":30";
-        else
-            return hour+":00";
-//        int endMins=totalMins+30;
-//        int endHour=endMins/60;
-//        int endMin=endMins%60;
-//        return hour+":"+min+"~"+endHour+":"+endMin;
     }
 
     public String simplePrintPeriod(int periodId){
         if(periodId%2==0){
-            if(periodId/2<10)
+            if(periodId/2<10) {
                 return "0"+(periodId/2)+":00";
-            else
+            } else {
                 return (periodId/2)+":00";
+            }
         }else{
-            if(periodId/2<10)
+            if(periodId/2<10) {
                 return "0"+(periodId/2)+":30";
-            else
+            } else {
                 return (periodId/2)+":30";
+            }
         }
     }
-
-//    class ReservationComparator implements Comparator<Reservation>{
-//
-//        @Override
-//        public int compare(Reservation r1, Reservation r2) {
-//            return r1.getBeginTime()-r2.getBeginTime();
-//        }
-//    }
 }
 
 

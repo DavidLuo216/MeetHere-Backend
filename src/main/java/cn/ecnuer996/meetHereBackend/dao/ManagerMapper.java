@@ -1,7 +1,9 @@
 package cn.ecnuer996.meetHereBackend.dao;
 
 import cn.ecnuer996.meetHereBackend.model.Manager;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ManagerMapper {
     int deleteByPrimaryKey(Integer id);
 
