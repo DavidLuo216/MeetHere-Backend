@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+@CrossOrigin
 @RestController
 @Api(tags = "预定相关接口")
 public class ReservationController {

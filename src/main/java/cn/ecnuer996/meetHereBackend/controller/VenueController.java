@@ -11,10 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -25,6 +22,7 @@ import java.text.SimpleDateFormat;
 /**
  * @author LuoChengLing
  */
+@CrossOrigin
 @RestController
 @Api(tags = "场馆相关接口")
 public class VenueController {
@@ -56,15 +54,21 @@ public class VenueController {
                                @RequestParam String phone,
                                @RequestParam String beginTime,
                                @RequestParam String endTime,
-                               @RequestParam MultipartFile[] images) throws ParseException {
+                               @RequestParam MultipartFile[] images){
         JSONObject response=new JSONObject();
         Venue venue=new Venue();
         venue.setName(name);
         venue.setAddress(address);
         venue.setPhone(phone);
         venue.setIntroduction(introduction);
-        venue.setBeginTime(timeFormat.parse(beginTime));
-        venue.setEndTime(timeFormat.parse(endTime));
+        try{
+            venue.setBeginTime(timeFormat.parse(beginTime));
+            venue.setEndTime(timeFormat.parse(endTime));
+        }catch (ParseException p){
+            p.printStackTrace();
+            response.put("message","日期格式错误");
+            return response;
+        }
         venueDao.insert(venue);
         venue=venueDao.selectByVenueName(name).get(0);
         int venueId=venue.getId();
