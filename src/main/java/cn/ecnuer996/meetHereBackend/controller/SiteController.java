@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class SiteController {
     private SiteService siteService;
 
+    String urlPrefix="https://ecnuer996.cn/images";
+
     @Autowired
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
@@ -41,7 +43,7 @@ public class SiteController {
             JSONObject result = new JSONObject();
             result.put("siteName",site.getName());
             result.put("siteIntro",site.getIntruction());
-            result.put("siteUrl",site.getImage());
+            result.put("siteUrl",urlPrefix + site.getImage());
             result.put("sitePrice",site.getPrice());
             response.put("result",result);
         }
