@@ -18,7 +18,7 @@ public class SwaggerConfig {
     public Docket api(){
         return new Docket(DocumentationType.SWAGGER_2)
                 //部署时为了保证swagger可用需要设置host
-                .host("ecnuer996.cn/MeetHere/api")
+//                .host("ecnuer996.cn/MeetHere/api")
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
