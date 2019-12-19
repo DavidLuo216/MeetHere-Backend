@@ -15,6 +15,14 @@ public interface NewsMapper {
 
     News selectByPrimaryKey(Integer id);
 
+    /**
+     * 数据库设置了新闻标题唯一，可通过标题查询
+     * 用于新增新闻后获取其id以便保存新闻图片
+     * @param title
+     * @return
+     */
+    News selectByTitle(String title);
+
     int updateByPrimaryKeySelective(News record);
 
     int updateByPrimaryKey(News record);

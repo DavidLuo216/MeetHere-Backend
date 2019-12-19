@@ -1,7 +1,5 @@
 package cn.ecnuer996.meetHereBackend.util;
 
-import org.springframework.beans.factory.annotation.Value;
-
 /**
  * 记录各种路径的信息
  * @author LuoChengLing

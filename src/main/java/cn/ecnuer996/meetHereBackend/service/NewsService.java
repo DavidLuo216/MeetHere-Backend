@@ -5,6 +5,7 @@ import cn.ecnuer996.meetHereBackend.dao.NewsImageMapper;
 import cn.ecnuer996.meetHereBackend.dao.NewsMapper;
 import cn.ecnuer996.meetHereBackend.model.Manager;
 import cn.ecnuer996.meetHereBackend.model.News;
+import cn.ecnuer996.meetHereBackend.model.NewsImageKey;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,21 +45,25 @@ public class NewsService {
         return newsDao.selectAllNews();
     }
 
-    public void getNewsDetail(JSONObject response,int newsId){
-        News news=newsDao.selectByPrimaryKey(newsId);
+    public News getSingleNews(int newsId){
+        return newsDao.selectByPrimaryKey(newsId);
+    }
+
+    public List<String> getNewsImages(int newsId){
         List<String> images=newsImageDao.selectNewsImagesByNewsId(newsId);
         List<String> urls=new ArrayList<>();
         for(String image:images){
             urls.add(FilePathUtil.URL_NEWS_IMAGE_PREFIX+image);
         }
-        response.put("id",news.getId());
-        Manager manager=managerDao.selectByPrimaryKey(news.getManagerId());
-        response.put("manager",manager.getName());
-        response.put("managerAvatar",FilePathUtil.URL_MANAGER_AVATAR_PREFIX+manager.getAvatar());
-        response.put("title",news.getTitle());
-        response.put("content",news.getContent());
-        response.put("time",format.format(news.getTime()));
-        response.put("images",urls);
+        return urls;
+    }
+
+    public News getNewsByTitle(String title){
+        return newsDao.selectByTitle(title);
+    }
+
+    public int addNewsImage(NewsImageKey newsImageKey){
+        return newsImageDao.insert(newsImageKey);
     }
 
     public String getNewsCover(int newsId){

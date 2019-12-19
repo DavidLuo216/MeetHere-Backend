@@ -17,6 +17,12 @@
     from news
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByTitle" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from news
+    where title = #{title}
+  </select>
   <select id="selectAllNews" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
