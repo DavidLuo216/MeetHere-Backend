@@ -13,6 +13,13 @@ public interface ManagerMapper {
 
     Manager selectByPrimaryKey(Integer id);
 
+    /**
+     * 根据管理员名称查询，管理员名唯一
+     * @param name
+     * @return
+     */
+    Manager selectByName(String name);
+
     int updateByPrimaryKeySelective(Manager record);
 
     int updateByPrimaryKey(Manager record);

@@ -16,6 +16,12 @@
     from manager2
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from manager2
+    where name = #{name}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from manager2
     where id = #{id,jdbcType=INTEGER}
