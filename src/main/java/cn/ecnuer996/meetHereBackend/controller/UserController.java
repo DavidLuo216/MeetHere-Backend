@@ -5,6 +5,7 @@ import cn.ecnuer996.meetHereBackend.model.UserAuth;
 import cn.ecnuer996.meetHereBackend.service.UserAuthService;
 import cn.ecnuer996.meetHereBackend.service.UserService;
 import cn.ecnuer996.meetHereBackend.transfer.UserInList;
+import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -30,8 +31,6 @@ public class UserController {
     public void setUserAuthService(UserAuthService userAuthService) {
         this.userAuthService = userAuthService;
     }
-
-    String urlPrefix="https://ecnuer996.cn/images";
 
     @ApiOperation("用户登录接口")
     @PostMapping(value="/sign-in")
@@ -62,7 +61,7 @@ public class UserController {
             response.put("code",200);
             response.put("message","登录成功");
             User user=userService.getUserById(userAuth.getUserId());
-            user.setAvatar(urlPrefix+user.getAvatar());
+            user.setAvatar(FilePathUtil.URL_USER_AVATAR_PREFIX +user.getAvatar());
             response.put("data",user);
             return response;
         }
@@ -93,11 +92,11 @@ public class UserController {
             user.setId(null);
             user.setNickname(nickname);
             // 默认头像
-            user.setAvatar("/user-avatars/default.jpg");
+            user.setAvatar("default.jpg");
             user.setEmail(email);
             user.setPhone(phone);
             userService.insert(user);
-            user.setAvatar(urlPrefix+user.getAvatar());
+            user.setAvatar(FilePathUtil.URL_USER_AVATAR_PREFIX+user.getAvatar());
 
             UserAuth nicknameAuth=new UserAuth();
             UserAuth phoneAuth=new UserAuth();

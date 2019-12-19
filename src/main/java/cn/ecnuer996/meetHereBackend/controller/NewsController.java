@@ -29,17 +29,11 @@ import java.util.List;
 @Api(tags = "新闻相关接口")
 public class NewsController {
     private NewsService newsService;
-    private ManagerService managerService;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public void setNewsService(NewsService newsService) {
         this.newsService = newsService;
-    }
-
-    @Autowired
-    public void setManagerService(ManagerService managerService) {
-        this.managerService = managerService;
     }
 
     @ApiOperation("分页查询所有新闻信息")
@@ -110,6 +104,9 @@ public class NewsController {
             newsImageKey.setImage(destFile);
             newsService.addNewsImage(newsImageKey);
         }
+        JSONObject result=new JSONObject();
+        result.put("id",newsId);
+        response.put("result",result);
         response.put("code",200);
         response.put("message","新增成功");
         return response;
