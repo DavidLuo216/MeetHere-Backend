@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SiteController {
     private SiteService siteService;
 
-    String urlPrefix="https://ecnuer996.cn/images";
+    String urlPrefix="https://ecnuer996.cn/images/site-images/";
 
     @Autowired
     public void setSiteService(SiteService siteService) {
