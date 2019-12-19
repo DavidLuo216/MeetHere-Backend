@@ -11,6 +11,18 @@ public class Comment {
 
     private Integer link;
 
+    public Comment() {
+
+    }
+
+    public Comment(Integer id, String type, Integer userId, String content, Integer link) {
+        this.id = id;
+        this.type = type;
+        this.userId = userId;
+        this.content = content;
+        this.link = link;
+    }
+
     public Integer getId() {
         return id;
     }

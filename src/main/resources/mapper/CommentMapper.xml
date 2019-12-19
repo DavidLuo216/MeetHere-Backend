@@ -90,4 +90,54 @@
       link = #{link,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- Personal SQL Begin -->
+
+  <select id="getWholeComments" resultMap="BaseResultMap">
+    select * from comment
+    where type = '1' and link = 1
+  </select>
+
+  <select id="getVenueComments" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from comment
+    where type = '2' and link = #{link,jdbcType=INTEGER}
+  </select>
+
+  <select id="getNewsComments" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from comment
+    where type = '3' and link = #{link,jdbcType=INTEGER}
+  </select>
+
+  <select id="detectComment" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from comment
+    where id = #{id,jdbcType=INTEGER} and link != -1
+  </select>
+
+  <update id="deleteComment" parameterType="java.lang.Integer">
+    update comment set link = -link
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="discoverComments">
+    update comment set link = -link
+    where link &lt; 0
+  </update>
+
+  <insert id="addGlobalComment" parameterType="cn.ecnuer996.meetHereBackend.model.Comment">
+    <trim prefix="insert into comment values (" suffix=")" suffixOverrides="," >
+      #{id,jdbcType=INTEGER},
+      #{type,jdbcType=VARCHAR},
+      #{userId,jdbcType=INTEGER},
+      #{content,jdbcType=VARCHAR},
+      #{link,jdbcType=INTEGER}
+    </trim>
+  </insert>
+
+  <select id="getNextId" resultType="java.lang.Integer" parameterType="java.lang.String">
+    select count(*) from comment
+    where type = #{type,jdbcType=VARCHAR}
+  </select>
+
+  <!-- Personal SQL Finish -->
+
 </mapper>

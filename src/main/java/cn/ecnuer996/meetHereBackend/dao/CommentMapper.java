@@ -1,7 +1,11 @@
 package cn.ecnuer996.meetHereBackend.dao;
 
 import cn.ecnuer996.meetHereBackend.model.Comment;
+import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+
+@Repository
 public interface CommentMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +18,24 @@ public interface CommentMapper {
     int updateByPrimaryKeySelective(Comment record);
 
     int updateByPrimaryKey(Comment record);
+
+    /* Personal Functions Begin */
+
+    ArrayList<Comment> getWholeComments();
+
+    ArrayList<Comment> getVenueComments(Integer link);
+
+    ArrayList<Comment> getNewsComments(Integer link);
+
+    ArrayList<Comment> detectComment(Integer id);
+
+    void deleteComment(Integer id);
+
+    void discoverComments();
+
+    void addGlobalComment(Comment comment);
+
+    Integer getNextId(String type);
+
+    /* Personal Functions Finish */
 }

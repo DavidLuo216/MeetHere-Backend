@@ -4,7 +4,6 @@ import cn.ecnuer996.meetHereBackend.model.News;
 import cn.ecnuer996.meetHereBackend.model.NewsImageKey;
 import cn.ecnuer996.meetHereBackend.service.ManagerService;
 import cn.ecnuer996.meetHereBackend.service.NewsService;
-import cn.ecnuer996.meetHereBackend.transfer.NewsItem;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;

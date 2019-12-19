@@ -3,11 +3,9 @@ package cn.ecnuer996.meetHereBackend.service;
 import cn.ecnuer996.meetHereBackend.dao.ManagerMapper;
 import cn.ecnuer996.meetHereBackend.dao.NewsImageMapper;
 import cn.ecnuer996.meetHereBackend.dao.NewsMapper;
-import cn.ecnuer996.meetHereBackend.model.Manager;
 import cn.ecnuer996.meetHereBackend.model.News;
 import cn.ecnuer996.meetHereBackend.model.NewsImageKey;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
