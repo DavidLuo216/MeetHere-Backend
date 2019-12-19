@@ -2,6 +2,7 @@ package cn.ecnuer996.meetHereBackend.controller;
 
 import cn.ecnuer996.meetHereBackend.model.Site;
 import cn.ecnuer996.meetHereBackend.service.SiteService;
+import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "场地相关接口")
 public class SiteController {
     private SiteService siteService;
-
-    String urlPrefix="https://ecnuer996.cn/images/";
 
     @Autowired
     public void setSiteService(SiteService siteService) {
@@ -43,7 +42,7 @@ public class SiteController {
             JSONObject result = new JSONObject();
             result.put("siteName",site.getName());
             result.put("siteIntro",site.getIntruction());
-            result.put("siteUrl",urlPrefix + site.getImage());
+            result.put("siteUrl", FilePathUtil.URL_SITE_IMAGE_PREFIX + site.getImage());
             result.put("sitePrice",site.getPrice());
             response.put("result",result);
         }

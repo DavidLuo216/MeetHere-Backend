@@ -10,6 +10,7 @@ import cn.ecnuer996.meetHereBackend.service.UserService;
 import cn.ecnuer996.meetHereBackend.service.VenueService;
 import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
 import cn.ecnuer996.meetHereBackend.transfer.VenueInList;
+import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import cn.ecnuer996.meetHereBackend.util.ReservationState;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -51,8 +52,6 @@ public class ReservationController {
     public void setReservationService(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
-
-    String urlPrefix="https://ecnuer996.cn/images";
 
     /* Change Date To String Begin */
     private String DateToDate(Date date) {
@@ -208,7 +207,7 @@ public class ReservationController {
                 Site site = siteService.getSiteById(reservation.getSiteId());
                 /* Calculate Element Value Begin */
                 item.setSiteName(site.getName());
-                item.setSiteImage(urlPrefix + site.getImage());
+                item.setSiteImage(FilePathUtil.URL_SITE_IMAGE_PREFIX + site.getImage());
                 item.setVenueName(venueService.getVenueById(site.getVenueId()).getName());
                 item.setBookTime(DateToTime(reservation.getBookTime()));
                 item.setReserveDate(DateToDate(reservation.getDate()));

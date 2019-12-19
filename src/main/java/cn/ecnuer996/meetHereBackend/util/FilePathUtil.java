@@ -20,8 +20,4 @@ public class FilePathUtil {
     public static final String LOCAL_MANAGER_AVATAR_PREFIX=uploadFolder+"manager-avatars/";
     public static final String URL_NEWS_IMAGE_PREFIX ="https://ecnuer996.cn/images/news-images/";
     public static final String LOCAL_NEWS_IMAGE_PREFIX=uploadFolder+"news-images/";
-
-    public static void main(String[] args){
-        System.out.println(FilePathUtil.LOCAL_SITE_IMAGE_PREFIX);
-    }
 }

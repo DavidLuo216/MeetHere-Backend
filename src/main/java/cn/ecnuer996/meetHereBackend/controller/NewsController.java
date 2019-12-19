@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,7 +73,8 @@ public class NewsController {
     public JSONObject addNews(@RequestParam("managerId")Integer managerId,
                               @RequestParam("time")String time,
                               @RequestParam("title")String title,
-                              @RequestParam("content")String content){
+                              @RequestParam("content")String content,
+                              @RequestParam("images")MultipartFile[] images){
         News news = new News();
         news.setManagerId(managerId);
         try {
