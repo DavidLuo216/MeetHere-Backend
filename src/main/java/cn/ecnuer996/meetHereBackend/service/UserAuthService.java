@@ -1,9 +1,11 @@
 package cn.ecnuer996.meetHereBackend.service;
 
-import cn.ecnuer996.meetHereBackend.model.UserAuth;
 import cn.ecnuer996.meetHereBackend.dao.UserAuthMapper;
+import cn.ecnuer996.meetHereBackend.model.UserAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service("UserAuthService")
 public class UserAuthService {
@@ -51,4 +53,22 @@ public class UserAuthService {
         UserAuth userAuth = userAuthDao.getUserAuthById(user_id);
         return userAuth.getIdentityType();
     }
+
+    public boolean isForgetBefore(String username) {
+        UserAuth userAuth = userAuthDao.isForgetBefore(username);
+        return userAuth != null;
+    }
+
+    public ArrayList<UserAuth> getForgetUserAuths() {
+        return userAuthDao.getForgetUserAuths();
+    }
+
+    public void acceptRediscover(String username) {
+        userAuthDao.acceptRediscover(username);
+    }
+
+    public void refuseRediscover(String username) {
+        userAuthDao.refuseRediscover(username);
+    }
+
 }

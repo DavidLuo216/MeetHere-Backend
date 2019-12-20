@@ -3,6 +3,8 @@ package cn.ecnuer996.meetHereBackend.dao;
 import cn.ecnuer996.meetHereBackend.model.UserAuth;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+
 @Repository
 public interface UserAuthMapper {
     int insert(UserAuth record);
@@ -27,4 +29,13 @@ public interface UserAuthMapper {
     void forbidUserById(int user_id);
 
     void permitUserById(int user_id);
+
+    UserAuth isForgetBefore(String username);
+
+    ArrayList<UserAuth> getForgetUserAuths();
+
+    void acceptRediscover(String username);
+
+    void refuseRediscover(String username);
+
 }

@@ -52,4 +52,5 @@ public class UserAuth {
     public void setCredential(String credential) {
         this.credential = credential == null ? null : credential.trim();
     }
+
 }

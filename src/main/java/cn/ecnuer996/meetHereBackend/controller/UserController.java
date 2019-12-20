@@ -196,4 +196,25 @@ public class UserController {
         }
         return response;
     }
+
+    @ApiOperation("忘记密码")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "username", value = "用户名", required = true)
+    })
+    @GetMapping(value="/forget-password")
+    public JSONObject forget_password(@RequestParam("username")String username) {
+        JSONObject response = new JSONObject();
+        UserAuth userAuth = new UserAuth("rediscover",username,"19260817");
+        if(userAuthService.isForgetBefore(username)) {
+            response.put("code", 304);
+            response.put("message", "记录成功");
+        }
+        else{
+            userAuthService.insert(userAuth);
+            response.put("code", 200);
+            response.put("message", "记录成功");
+        }
+        return response;
+    }
+
 }

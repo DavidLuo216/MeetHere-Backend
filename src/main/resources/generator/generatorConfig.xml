@@ -11,7 +11,7 @@
             <property name="suppressAllComments" value="true" />
         </commentGenerator>
         <!--数据库链接URL，用户名、密码 -->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/venue_reservation_db?serverTimezone=UTC" userId="root" password="MeetHere!password0">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/venue_reservation_db?serverTimezone=UTC&amp;allowMultiQueries=true" userId="root" password="MeetHere!password0">
         </jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false" />

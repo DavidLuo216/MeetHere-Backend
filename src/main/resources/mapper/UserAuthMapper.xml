@@ -52,6 +52,14 @@
     from user_auth2
     where identity_type = #{method} and identifier = #{identifier}
   </select>
+  <select id="isForgetBefore" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from user_auth2
+    where identity_type = 'rediscover' and identifier = #{username,jdbcType=VARCHAR}
+  </select>
+  <select id="getForgetUserAuths" resultMap="BaseResultMap">
+    select * from user_auth2
+    where identity_type = 'rediscover'
+  </select>
   <insert id="insert" parameterType="cn.ecnuer996.meetHereBackend.model.UserAuth">
     insert into user_auth2 (user_id, identity_type, identifier, 
       credential)
@@ -98,5 +106,18 @@
     update user_auth2
     set identity_type = 'nickname'
     where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="acceptRediscover" parameterType="java.lang.String">
+    update user_auth2
+    set credential = '19260817'
+    where identity_type = 'nickname' and identifier = #{username,jdbcType=VARCHAR};
+    update user_auth2
+    set identity_type = 'accepted'
+    where identity_type = 'rediscover' and identifier = #{username,jdbcType=VARCHAR};
+  </update>
+  <update id="refuseRediscover" parameterType="java.lang.String">
+    update user_auth2
+    set identity_type = 'refused'
+    where identity_type = 'rediscover' and identifier = #{username,jdbcType=VARCHAR};
   </update>
 </mapper>
