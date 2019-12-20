@@ -62,6 +62,7 @@ public class UserController {
             response.put("message","登录成功");
             User user=userService.getUserById(userAuth.getUserId());
             user.setAvatar(FilePathUtil.URL_USER_AVATAR_PREFIX +user.getAvatar());
+            userAuthService.refuseRediscover(user.getNickname());   //兼容找回密码接口，登陆完拒绝之前所有的找回密码请求
             response.put("data",user);
             return response;
         }
