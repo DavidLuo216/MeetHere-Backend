@@ -10,6 +10,7 @@ import cn.ecnuer996.meetHereBackend.service.UserService;
 import cn.ecnuer996.meetHereBackend.service.VenueService;
 import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
 import cn.ecnuer996.meetHereBackend.transfer.VenueInList;
+import cn.ecnuer996.meetHereBackend.transfer.TopNVenues;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import cn.ecnuer996.meetHereBackend.util.ReservationState;
 import com.alibaba.fastjson.JSONObject;
@@ -22,10 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -93,6 +91,53 @@ public class ReservationController {
         response.put("messages","查询成功");
         response.put("num_of_pages", num_of_pages);
         response.put("result",venues);
+        return response;
+    }
+
+    @ApiOperation("最受欢迎的n个场馆信息")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "n", value = "数目", required = true)})
+    @GetMapping(value="/topNVenues")
+    public <TopNResult> JSONObject getTopNVenues(@RequestParam("n")Integer n){
+        JSONObject response = new JSONObject();
+        ArrayList<Integer> siteIds = reservationService.getSiteIdsOfReservations();
+        ArrayList<Integer> venueSiteIds = siteService.getVenueSiteIds();
+        Map site2venue = new HashMap();
+        for(Integer venueSiteId : venueSiteIds){
+            site2venue.put(venueSiteId % 10000,venueSiteId / 10000);
+        }
+        Map venue2times = new HashMap<Integer,Integer>();
+        for(Integer siteId : siteIds) {
+            int venueId = (Integer)site2venue.get(siteId);
+            if(venue2times.containsKey(venueId)) {
+                venue2times.put(venueId, (Integer)venue2times.get(venueId) + 1);
+            }
+            else{
+                venue2times.put(venueId,1);
+            }
+        }
+        ArrayList<Integer> venueWithTimes = new ArrayList<>();
+        for(Object entry : venue2times.entrySet()) {
+            venueWithTimes.add((Integer) ((Map.Entry) entry).getKey() + (Integer) ((Map.Entry) entry).getValue() * 10000);
+        }
+        venueWithTimes.sort(Comparator.reverseOrder());
+
+        n = Math.min(n,venueWithTimes.size());
+
+        ArrayList<TopNVenues> result = new ArrayList<>();
+
+        for(int i = 0; i < n; ++i){
+            TopNVenues topNVenues = new TopNVenues();
+            topNVenues.rank = i + 1;
+            topNVenues.venueId = venueWithTimes.get(i) % 10000;
+            topNVenues.times = venueWithTimes.get(i) / 10000;
+            result.add(topNVenues
+            );
+        }
+
+        response.put("code", 200);
+        response.put("message", "success");
+        response.put("result", result);
+
         return response;
     }
 

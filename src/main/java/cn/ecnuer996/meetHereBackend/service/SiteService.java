@@ -5,6 +5,8 @@ import cn.ecnuer996.meetHereBackend.dao.SiteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service("SiteService")
 public class SiteService {
     @Autowired
@@ -13,4 +15,9 @@ public class SiteService {
     public Site getSiteById(int id) {
         return siteDao.selectByPrimaryKey(id);
     }
+
+    public ArrayList<Integer> getVenueSiteIds() {
+        return siteDao.getVenueSiteIds();
+    }
+
 }

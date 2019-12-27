@@ -24,6 +24,10 @@
     from site
     where venue_id = #{venue_id,jdbcType=INTEGER}
   </select>
+  <select id="getVenueSiteIds" resultType="java.lang.Integer">
+    select venue_id * 10000 + id
+    from site
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from site
     where id = #{id,jdbcType=INTEGER}

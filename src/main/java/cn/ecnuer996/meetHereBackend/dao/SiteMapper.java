@@ -20,4 +20,7 @@ public interface SiteMapper {
     int updateByPrimaryKeySelective(Site record);
 
     int updateByPrimaryKey(Site record);
+
+    ArrayList<Integer> getVenueSiteIds();
+
 }

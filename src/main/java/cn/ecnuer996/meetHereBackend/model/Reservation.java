@@ -102,4 +102,5 @@ public class Reservation {
     public void setComment(String comment) {
         this.comment = comment == null ? null : comment.trim();
     }
+
 }

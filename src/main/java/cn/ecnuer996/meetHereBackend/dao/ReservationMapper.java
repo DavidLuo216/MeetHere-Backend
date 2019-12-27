@@ -3,6 +3,7 @@ package cn.ecnuer996.meetHereBackend.dao;
 import cn.ecnuer996.meetHereBackend.model.Reservation;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,5 +26,7 @@ public interface ReservationMapper {
     int updateByPrimaryKeySelective(Reservation record);
 
     int updateByPrimaryKey(Reservation record);
+
+    ArrayList<Integer> getSiteIdsOfReservations();
 
 }
