@@ -62,8 +62,8 @@ public class VenueService {
             venueItem.id=venue.getId();
             venueItem.name=venue.getName();
             venueItem.address=venue.getAddress();
-            venueItem.beginTime=formatter.format(venue.getBeginTime());
-            venueItem.endTime=formatter.format(venue.getEndTime());
+            venueItem.beginTime=venue.getBeginTime();
+            venueItem.endTime=venue.getEndTime();
             venueItem.cover=FilePathUtil.URL_VENUE_COVER_PREFIX+venueImageDao.getVenueCoverByVenueId(venue.getId());
             listVenues.add(venueItem);
         }

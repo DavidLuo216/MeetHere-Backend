@@ -133,7 +133,7 @@ public class CommentController {
 
     @ApiOperation("删除评论")
     @GetMapping(value="/delete-comment")
-    @ApiImplicitParams({
+        @ApiImplicitParams({
         @ApiImplicitParam(name = "id", value = "评论编号", required = true)
     })
     public JSONObject deleteComment(
@@ -152,7 +152,6 @@ public class CommentController {
         return response;
     }
 
-    /* 测试用代码，一键恢复被删除的评论，仅提供测试API时的便利，并不上线 */
     @ApiOperation("恢复评论")
     @GetMapping(value="/discover-comments")
     public void discoverComment() {
