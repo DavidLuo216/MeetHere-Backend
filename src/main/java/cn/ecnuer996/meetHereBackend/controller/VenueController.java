@@ -6,9 +6,13 @@ import cn.ecnuer996.meetHereBackend.dao.VenueMapper;
 import cn.ecnuer996.meetHereBackend.model.Site;
 import cn.ecnuer996.meetHereBackend.model.Venue;
 import cn.ecnuer996.meetHereBackend.model.VenueImage;
+import cn.ecnuer996.meetHereBackend.service.VenueService;
+import cn.ecnuer996.meetHereBackend.transfer.VenueInList;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 /**
  * @author LuoChengLing
@@ -27,9 +32,15 @@ import java.text.SimpleDateFormat;
 @Api(tags = "场馆相关接口")
 public class VenueController {
     private VenueMapper venueDao;
+    private VenueService venueService;
     private VenueImageMapper venueImageDao;
     private SiteMapper siteDao;
     private SimpleDateFormat timeFormat=new SimpleDateFormat("HH:mm");
+
+    @Autowired
+    public void setVenueService(VenueService venueService) {
+        this.venueService = venueService;
+    }
 
     @Autowired
     public void setVenueService(VenueMapper venueDao) {
@@ -44,6 +55,56 @@ public class VenueController {
     @Autowired
     public void setSiteDao(SiteMapper siteDao) {
         this.siteDao = siteDao;
+    }
+
+    @ApiOperation("场馆一览")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
+                         @ApiImplicitParam(name = "page", value = "待查询页号", required = true)})
+    @GetMapping(value="/venues")
+    public JSONObject getAllVenues(@RequestParam("segment")Integer segment,
+                                   @RequestParam("page")Integer page){
+        ArrayList<VenueInList> pre_venues = venueService.getAllVenues();
+        int num_of_pages = Math.max((int) Math.ceil(pre_venues.size() / (double) segment), 1);
+        ArrayList<VenueInList> venues = new ArrayList<>();
+        for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, pre_venues.size()); ++i){
+            venues.add(pre_venues.get(i));
+        }
+        JSONObject response = new JSONObject();
+        response.put("code",200);
+        response.put("message","查询成功");
+        response.put("num_of_pages", num_of_pages);
+        response.put("result",venues);
+        return response;
+    }
+
+    @ApiOperation("场馆关键字搜索")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "name", value = "关键词", required = true),
+                         @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
+                         @ApiImplicitParam(name = "page", value = "待查询页号", required = true)})
+    @GetMapping(value="/venue")
+    public JSONObject getVenues(@RequestParam("name") String name,
+                                @RequestParam("segment")Integer segment,
+                                @RequestParam("page")Integer page){
+        ArrayList<Venue> pre_venues = venueService.getVenueByName("%" + name + "%");
+        int num_of_pages = Math.max((int) Math.ceil(pre_venues.size() / (double) segment), 1);
+        ArrayList<VenueInList> venues = new ArrayList<>();
+        for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, pre_venues.size()); ++i){
+            Venue v = pre_venues.get(i);
+            venues.add(new VenueInList(v.getId(), v.getName(), v.getAddress(), v.getBeginTime(), v.getEndTime(), v.getIntroduction()));
+        }
+        JSONObject response = new JSONObject();
+        response.put("code",200);
+        response.put("message","查询成功");
+        response.put("num_of_pages", num_of_pages);
+        response.put("result",venues);
+        return response;
+    }
+
+    @ApiOperation("指定场馆信息查询")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "场馆id", required = true) })
+    @GetMapping(value="/venue-detail")
+    public JSONObject getVenueDetail(@RequestParam("id")Integer venueId){
+        return venueService.getVenueDetail(venueId);
     }
 
     @ApiOperation("新增场馆")

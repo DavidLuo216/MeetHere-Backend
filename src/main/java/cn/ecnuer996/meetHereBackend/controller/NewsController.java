@@ -2,7 +2,6 @@ package cn.ecnuer996.meetHereBackend.controller;
 
 import cn.ecnuer996.meetHereBackend.model.News;
 import cn.ecnuer996.meetHereBackend.model.NewsImageKey;
-import cn.ecnuer996.meetHereBackend.service.ManagerService;
 import cn.ecnuer996.meetHereBackend.service.NewsService;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -36,7 +35,7 @@ public class NewsController {
         this.newsService = newsService;
     }
 
-    @ApiOperation("分页查询所有新闻信息")
+    @ApiOperation("新闻一览")
     @ApiImplicitParams({ @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
                          @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)})
     @GetMapping(value="/all-news")
