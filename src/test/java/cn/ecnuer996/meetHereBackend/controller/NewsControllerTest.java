@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -17,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -39,7 +41,28 @@ class NewsControllerTest {
     }
 
     @Test
-    void addNews() {
+    @DisplayName("新增新闻")
+    void addNews() throws Exception {
+        News news=mock(News.class);
+        when(news.getId()).thenReturn(1);
+        when(newsService.getNewsByTitle("新闻标题")).thenReturn(news);
+        mockMvc.perform(MockMvcRequestBuilders
+        .multipart("/add-news")
+                .file(new MockMultipartFile("fakeImage1.jpg",new byte[10]))
+                .file(new MockMultipartFile("fakeImage2.png",new byte[10]))
+                .param("managerId","1")
+                .param("time","2019-12-12 12:12:12")
+                .param("title","新闻标题")
+                .param("content","新闻内容"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.message")
+                        .value("新增成功"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
     }
 
     @Test

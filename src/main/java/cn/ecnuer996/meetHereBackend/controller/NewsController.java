@@ -10,10 +10,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -62,7 +59,7 @@ public class NewsController {
                          @ApiImplicitParam(name = "time", value = "时间", required = true),
                          @ApiImplicitParam(name = "title", value = "标题", required = true),
                          @ApiImplicitParam(name = "content", value = "内容", required = true)})
-    @GetMapping(value="/add-news")
+    @PostMapping(value="/add-news")
     public JSONObject addNews(@RequestParam("managerId")Integer managerId,
                               @RequestParam("time")String time,
                               @RequestParam("title")String title,

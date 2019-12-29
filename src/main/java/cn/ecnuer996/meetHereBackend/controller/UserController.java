@@ -63,7 +63,7 @@ public class UserController {
             User user=userService.getUserById(userAuth.getUserId());
             user.setAvatar(FilePathUtil.URL_USER_AVATAR_PREFIX +user.getAvatar());
             userAuthService.refuseRediscover(user.getNickname());   //兼容找回密码接口，登陆完拒绝之前所有的找回密码请求
-            response.put("data",user);
+            response.put("result",user);
             return response;
         }
     }
@@ -113,7 +113,7 @@ public class UserController {
 
             response.put("code",200);
             response.put("message","注册成功！");
-            response.put("data",user);
+            response.put("result",user);
             return response;
         }
     }
@@ -130,7 +130,7 @@ public class UserController {
             userService.insert(user);
             response.put("code",200);
             response.put("message","个人信息更新成功！");
-            response.put("data",userService.getUserById(user.getId()));
+            response.put("result",userService.getUserById(user.getId()));
             return response;
         }
     }
