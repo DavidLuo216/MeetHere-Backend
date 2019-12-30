@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -45,7 +44,7 @@ public class UserController {
         String signInMethod=userAuthParam.getIdentityType();
         UserAuth userAuth=userAuthService.getBySignInMethod(signInMethod,identifier);
         if(userAuth==null){
-            return new JsonResult(500,"用户不存在！");
+            return new JsonResult(JsonResult.NOT_FOUND,"用户不存在！");
         }else if(!userAuth.getCredential().equals(credential)){
             //因为没有邮箱服务和短信服务，
             // 所以邮箱登录方式和短信登录方式的验证码只能静态存储在数据库
@@ -58,7 +57,7 @@ public class UserController {
             }else if("email".equals(signInMethod)){
                 message="邮箱验证码错误！";
             }
-            return new JsonResult(400,message);
+            return new JsonResult(JsonResult.FAIL,message);
         }else {
             User user = userService.getUserById(userAuth.getUserId());
             user.setAvatar(FilePathUtil.URL_USER_AVATAR_PREFIX + user.getAvatar());
@@ -127,8 +126,8 @@ public class UserController {
         }else{
             String avatarName=avatar.getOriginalFilename();
             //获取图片格式后缀
-            String suffix = avatarName.substring(avatarName.lastIndexOf(".") + 1);
-            boolean uploadResult=false;
+            String suffix = avatarName.substring(avatarName.lastIndexOf("."));
+            boolean uploadResult;
             // 通过UUID生成唯一的图片名
             String newAvatarName=UUID.randomUUID()+suffix;
             String fileToSave=FilePathUtil.LOCAL_USER_AVATAR_PREFIX+ newAvatarName;

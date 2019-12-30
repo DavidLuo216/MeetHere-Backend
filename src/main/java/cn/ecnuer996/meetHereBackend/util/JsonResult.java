@@ -11,6 +11,7 @@ public class JsonResult<T> {
 
     public static final int SUCCESS=200;
     public static final int FAIL=400;
+    public static final int NOT_FOUND=404;
 
     /**
      * 若没有数据返回，默认状态码SUCCESS，提示信息为“操作成功！”
