@@ -11,8 +11,12 @@ import java.util.ArrayList;
 @Service("UserService")
 public class UserService {
 
-    @Autowired
     private UserMapper userDao;
+
+    @Autowired
+    public void setUserDao(UserMapper userDao) {
+        this.userDao = userDao;
+    }
 
     public User getUserById(int id) {
         return userDao.selectByPrimaryKey(id);
@@ -28,5 +32,9 @@ public class UserService {
 
     public ArrayList<User> getAllUsers() {
         return userDao.selectAllUsers();
+    }
+
+    public int update(User user){
+        return userDao.updateByPrimaryKeySelective(user);
     }
 }

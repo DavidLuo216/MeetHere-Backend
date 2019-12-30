@@ -7,6 +7,7 @@ import cn.ecnuer996.meetHereBackend.service.UserService;
 import cn.ecnuer996.meetHereBackend.transfer.UserInList;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import cn.ecnuer996.meetHereBackend.util.JsonResult;
+import cn.ecnuer996.meetHereBackend.util.UploadUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,8 +15,11 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.UUID;
 
 @CrossOrigin
 @RestController
@@ -47,11 +51,11 @@ public class UserController {
             // 所以邮箱登录方式和短信登录方式的验证码只能静态存储在数据库
             // 简单通过判断字符串是否相等来验证验证码
             String message="";
-            if(signInMethod.equals("nickname")){
+            if("nickname".equals(signInMethod)){
                 message="密码错误！";
-            }else if(signInMethod.equals("phone")){
+            }else if("phone".equals(signInMethod)){
                 message="手机验证码错误！";
-            }else if(signInMethod.equals("email")){
+            }else if("email".equals(signInMethod)){
                 message="邮箱验证码错误！";
             }
             return new JsonResult(400,message);
@@ -66,24 +70,17 @@ public class UserController {
 
     @ApiOperation("用户注册接口")
     @PostMapping(value="/sign-up")
-    public @ResponseBody JSONObject signUp(@RequestBody JSONObject postBody){
-        JSONObject response=new JSONObject();
+    public JsonResult signUp(@RequestBody JSONObject postBody){
         String email=postBody.getString("email");
         String phone=postBody.getString("phone");
         String nickname=postBody.getString("nickname");
         String password=postBody.getString("password");
         if(userAuthService.getBySignInMethod("nickname",nickname)!=null){
-            response.put("code",400);
-            response.put("message","用户名已被使用！");
-            return response;
+            return new JsonResult(JsonResult.FAIL,"用户名已被使用！");
         }else if(userAuthService.getBySignInMethod("phone",phone)!=null){
-            response.put("code",400);
-            response.put("message","手机号已被注册！");
-            return response;
+            return new JsonResult(JsonResult.FAIL,"手机号已被注册！");
         }else if(userAuthService.getBySignInMethod("email",email)!=null){
-            response.put("code",400);
-            response.put("message","邮箱已被注册！");
-            return response;
+            return new JsonResult(JsonResult.FAIL,"邮箱已被注册！");
         }else{
             User user=new User();
             user.setId(null);
@@ -96,8 +93,6 @@ public class UserController {
             user.setAvatar(FilePathUtil.URL_USER_AVATAR_PREFIX+user.getAvatar());
 
             UserAuth nicknameAuth=new UserAuth();
-            UserAuth phoneAuth=new UserAuth();
-            UserAuth emailAuth=new UserAuth();
 
             int user_id=userService.getUserByName(nickname).getId();
 
@@ -106,28 +101,53 @@ public class UserController {
             nicknameAuth.setIdentifier(nickname);
             nicknameAuth.setCredential(password);
             userAuthService.insert(nicknameAuth);
-
-            response.put("code",200);
-            response.put("message","注册成功！");
-            response.put("result",user);
-            return response;
+            return new JsonResult(user,"注册成功！");
         }
     }
 
-    @ApiOperation("更新用户信息接口")
+    @ApiOperation("更新用户文本信息接口")
     @PostMapping(value="/update-user-info")
-    public @ResponseBody JSONObject updateUserInfo(@RequestBody User user){
-        JSONObject response=new JSONObject();
+    public JsonResult updateUserInfo(@RequestBody User user){
         if(user.getId()==null || userService.getUserById(user.getId())==null){
-            response.put("code",400);
-            response.put("message","不允许更新一个不存在的用户的信息！");
-            return response;
+            return new JsonResult(JsonResult.FAIL,"不允许更新一个不存在的用户的信息！");
         }else{
-            userService.insert(user);
-            response.put("code",200);
-            response.put("message","个人信息更新成功！");
-            response.put("result",userService.getUserById(user.getId()));
-            return response;
+            //不对头像进行更新
+            user.setAvatar(null);
+            userService.update(user);
+            return new JsonResult(userService.getUserById(user.getId()),"个人信息更新成功！");
+        }
+    }
+
+    @ApiOperation("更新用户头像")
+    @PostMapping(value = "/update-avatar")
+    public JsonResult updateAvatar(@RequestParam MultipartFile avatar,@RequestParam int userId){
+        User user=userService.getUserById(userId);
+        if (user==null){
+            return new JsonResult(JsonResult.FAIL,"不存在的用户！");
+        }else{
+            String avatarName=avatar.getOriginalFilename();
+            //获取图片格式后缀
+            String suffix = avatarName.substring(avatarName.lastIndexOf(".") + 1);
+            boolean uploadResult=false;
+            // 通过UUID生成唯一的图片名
+            String newAvatarName=UUID.randomUUID()+suffix;
+            String fileToSave=FilePathUtil.LOCAL_USER_AVATAR_PREFIX+ newAvatarName;
+            //用户头像不为默认头像，需要删除旧头像，即更新头像文件
+            if(!"default.jpg".equals(user.getAvatar())){
+                String fileToDelete=FilePathUtil.LOCAL_USER_AVATAR_PREFIX+user.getAvatar();
+                uploadResult=UploadUtil.updateFile(avatar,fileToSave,fileToDelete);
+            }else{
+                //不需要删除默认头像
+                uploadResult=UploadUtil.upload(avatar,fileToSave);
+            }
+            if(uploadResult){
+                //更新图片成功
+                user.setAvatar(newAvatarName);
+                userService.update(user);
+                return new JsonResult(user,"更新头像成功！");
+            }else{
+                return new JsonResult(JsonResult.FAIL,"更新头像失败！");
+            }
         }
     }
 
