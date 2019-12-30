@@ -6,6 +6,7 @@ import cn.ecnuer996.meetHereBackend.service.UserAuthService;
 import cn.ecnuer996.meetHereBackend.service.UserService;
 import cn.ecnuer996.meetHereBackend.transfer.UserInList;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
+import cn.ecnuer996.meetHereBackend.util.JsonResult;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -34,37 +35,32 @@ public class UserController {
 
     @ApiOperation("用户登录接口")
     @PostMapping(value="/sign-in")
-    public @ResponseBody JSONObject signIn(@RequestBody JSONObject postBody){
-        String identifier=postBody.getString("id");
-        String credential=postBody.getString("credential");
-        String signInMethod=postBody.getString("method");
-        JSONObject response=new JSONObject();
+    public JsonResult signIn(@RequestBody UserAuth userAuthParam){
+        String identifier=userAuthParam.getIdentifier();
+        String credential=userAuthParam.getCredential();
+        String signInMethod=userAuthParam.getIdentityType();
         UserAuth userAuth=userAuthService.getBySignInMethod(signInMethod,identifier);
         if(userAuth==null){
-            response.put("code",500);
-            response.put("message","用户不存在！");
-            return response;
+            return new JsonResult(500,"用户不存在！");
         }else if(!userAuth.getCredential().equals(credential)){
             //因为没有邮箱服务和短信服务，
             // 所以邮箱登录方式和短信登录方式的验证码只能静态存储在数据库
             // 简单通过判断字符串是否相等来验证验证码
-            response.put("code",400);
+            String message="";
             if(signInMethod.equals("nickname")){
-                response.put("message","密码错误！");
+                message="密码错误！";
             }else if(signInMethod.equals("phone")){
-                response.put("message","手机验证码错误！");
+                message="手机验证码错误！";
             }else if(signInMethod.equals("email")){
-                response.put("message","邮箱验证码错误！");
+                message="邮箱验证码错误！";
             }
-            return response;
-        }else{
-            response.put("code",200);
-            response.put("message","登录成功");
-            User user=userService.getUserById(userAuth.getUserId());
-            user.setAvatar(FilePathUtil.URL_USER_AVATAR_PREFIX +user.getAvatar());
-            userAuthService.refuseRediscover(user.getNickname());   //兼容找回密码接口，登陆完拒绝之前所有的找回密码请求
-            response.put("result",user);
-            return response;
+            return new JsonResult(400,message);
+        }else {
+            User user = userService.getUserById(userAuth.getUserId());
+            user.setAvatar(FilePathUtil.URL_USER_AVATAR_PREFIX + user.getAvatar());
+            //兼容找回密码接口，登陆完拒绝之前所有的找回密码请求
+            userAuthService.refuseRediscover(user.getNickname());
+            return new JsonResult(user, "登录成功");
         }
     }
 
