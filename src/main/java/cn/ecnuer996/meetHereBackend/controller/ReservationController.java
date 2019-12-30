@@ -10,6 +10,7 @@ import cn.ecnuer996.meetHereBackend.service.VenueService;
 import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
 import cn.ecnuer996.meetHereBackend.transfer.TopNVenues;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
+import cn.ecnuer996.meetHereBackend.util.JsonResult;
 import cn.ecnuer996.meetHereBackend.util.ReservationState;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -61,15 +62,21 @@ public class ReservationController {
     @ApiOperation("通过venue_id查询某个场馆的所有场地接口")
     @ApiImplicitParams({ @ApiImplicitParam(name = "venue_id", value = "场馆id", required = true) })
     @GetMapping(value="/site")
-    public ArrayList<Site> getSites(@RequestParam("venue_id")Integer venueId){
-        return venueService.getSiteByVenueId(venueId);
+    public JsonResult getSites(@RequestParam("venue_id")Integer venueId){
+        ArrayList<Site> sites=venueService.getSiteByVenueId(venueId);
+        String prefix=FilePathUtil.URL_SITE_IMAGE_PREFIX;
+        for (Site s:sites){
+            s.setImage(prefix+s.getImage());
+        }
+        Map<String,Object> result=new HashMap<>(1);
+        result.put("sites",sites);
+        return new JsonResult(result);
     }
 
     @ApiOperation("最受欢迎的n个场馆信息")
     @ApiImplicitParams({ @ApiImplicitParam(name = "n", value = "数目", required = true)})
     @GetMapping(value="/topNVenues")
-    public JSONObject getTopNVenues(@RequestParam("n")Integer n){
-        JSONObject response = new JSONObject();
+    public JsonResult getTopNVenues(@RequestParam("n")Integer n){
         ArrayList<Integer> siteIds = reservationService.getSiteIdsOfReservations();
         ArrayList<Integer> venueSiteIds = siteService.getVenueSiteIds();
         Map site2venue = new HashMap();
@@ -94,34 +101,32 @@ public class ReservationController {
 
         n = Math.min(n,venueWithTimes.size());
 
-        ArrayList<TopNVenues> result = new ArrayList<>();
+        ArrayList<TopNVenues> venues = new ArrayList<>();
 
         for(int i = 0; i < n; ++i){
             TopNVenues topNVenues = new TopNVenues();
             topNVenues.rank = i + 1;
             topNVenues.venueId = venueWithTimes.get(i) % 10000;
             topNVenues.times = venueWithTimes.get(i) / 10000;
-            result.add(topNVenues
+            venues.add(topNVenues
             );
         }
 
-        response.put("code", 200);
-        response.put("message", "success");
-        response.put("result", result);
-
-        return response;
+        Map<String,Object> result=new HashMap<>(1);
+        result.put("venues",venues);
+        return new JsonResult(result);
     }
 
     @ApiOperation("提交预定信息接口")
     @PostMapping(value="/reserve")
-    public JSONObject generateReservation(@RequestBody JSONObject postBody){
+    public JsonResult generateReservation(@RequestBody JSONObject postBody){
         int siteId=postBody.getInteger("siteId");
         int userId=postBody.getInteger("userId");
         String date=postBody.getString("bookDate");
         int beginPeriod=postBody.getInteger("beginPeriod");
         int endPeriod=postBody.getInteger("endPeriod");
-        JSONObject response=new JSONObject();
         // 验证想预约的时段是否已被预约
+        ReservationDetail reservationDetail=null;
         try{
             SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
             //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
@@ -132,13 +137,9 @@ public class ReservationController {
                 //时段不可预约
                 if(bookList[i]!=0){
                     if(bookList[i]==1){
-                        response.put("code",500);
-                        response.put("message","您所选的时段已被预约，请重新选择预约时间！");
-                        return response;
+                        return new JsonResult(JsonResult.FAIL,"您所选的时段已被预约，请重新选择预约时间！");
                     }else{
-                        response.put("code",500);
-                        response.put("message","您所选的时段处于闭馆时间，请重新选择预约时间！");
-                        return response;
+                        return new JsonResult(JsonResult.FAIL,"您所选的时段处于闭馆时间，请重新选择预约时间！");
                     }
                 }
             }
@@ -153,17 +154,14 @@ public class ReservationController {
             reservation.setEndTime(endPeriod);
             reservation.setState(1);
             venueService.addReservation(reservation);
-            response.put("code","200");
-            response.put("message","预定成功！");
-            ReservationDetail reservationDetail=venueService.getLatestReservation(userId);
-            JSONObject reservationDetailJson=new JSONObject();
-            reservationDetailJson.put("reservationDetail",reservationDetail);
-            response.put("data",reservationDetailJson);
-            System.out.println(bookTime.getTime());
+            reservationDetail=venueService.getLatestReservation(userId);
         }catch(ParseException pe){
-            ;
+            pe.printStackTrace();
+            new JsonResult(JsonResult.FAIL,"预定失败");
         }
-        return response;
+        Map<String,Object> result=new HashMap<>(1);
+        result.put("detail",reservationDetail);
+        return new JsonResult(result,"预定成功");
     }
 
     @ApiOperation("分页查询用户订单列表接口")
@@ -171,14 +169,12 @@ public class ReservationController {
                          @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
                          @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)})
     @GetMapping(value="/orders")
-    public JSONObject searchOrders(@RequestParam("id")Integer userId,
+    public JsonResult searchOrders(@RequestParam("id")Integer userId,
                                    @RequestParam("segment")Integer segment,
                                    @RequestParam("page")Integer page) {
-        JSONObject response = new JSONObject();
         User user = userService.getUserById(userId);
         if(user.getId() < 0){
-            response.put("code",250);
-            response.put("message","你传了个假用户,拒绝");
+            return new JsonResult(JsonResult.FAIL,"无效的用户ID");
         }
         else{
             List<Reservation> pre_reservations = reservationService.getReservationByUserId(userId);
@@ -187,10 +183,7 @@ public class ReservationController {
             for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, pre_reservations.size()); ++i){
                 reservations.add(pre_reservations.get(i));
             }
-            response.put("code",200);
-            response.put("messages","查询成功");
-            response.put("num_of_pages", num_of_pages);
-            ArrayList<ReservationDetail> result = new ArrayList<>();
+            ArrayList<ReservationDetail> details = new ArrayList<>();
             int len = reservations.size();
             for(int i = 0; i < len; i++) {
                 Reservation reservation = reservations.get(i);
@@ -207,11 +200,13 @@ public class ReservationController {
                 item.setEndTime(venueService.simplePrintPeriod(reservation.getEndTime() + 1));
                 item.setState(ReservationState.states.get(reservation.getState()));
                 /* Calculate Element Value Finish */
-                result.add(item);
+                details.add(item);
             }
-            response.put("result",result);
+            Map<String,Object> result=new HashMap<>(2);
+            result.put("details",details);
+            result.put("num_of_pages",num_of_pages);
+            return new JsonResult(result,"查询成功");
         }
-        return response;
     }
 
 }

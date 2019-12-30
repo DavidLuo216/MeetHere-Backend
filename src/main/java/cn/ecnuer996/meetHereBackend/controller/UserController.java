@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @CrossOrigin
@@ -154,7 +156,7 @@ public class UserController {
     @ApiImplicitParams({ @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
                          @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)})
     @GetMapping(value="/users")
-    public JSONObject getAllUsers(@RequestParam("segment")Integer segment,
+    public JsonResult getAllUsers(@RequestParam("segment")Integer segment,
                                   @RequestParam("page")Integer page){
         ArrayList<User> pre_users = userService.getAllUsers();
         int num_of_pages = Math.max((int) Math.ceil(pre_users.size() / (double) segment), 1);
@@ -171,46 +173,36 @@ public class UserController {
             /* Calculate Element Value Finish */
             users.add(userInList);
         }
-        JSONObject response = new JSONObject();
-        response.put("code",200);
-        response.put("messages","查询成功");
-        response.put("num_of_pages", num_of_pages);
-        response.put("result",users);
-        return response;
+        Map<String,Object> result=new HashMap<>(2);
+        result.put("num_of_pages",num_of_pages);
+        result.put("users",users);
+        return new JsonResult(result,"查询成功");
     }
 
     @ApiOperation("用户封号")
     @ApiImplicitParams({ @ApiImplicitParam(name = "user_id", value = "用户id", required = true)})
     @GetMapping(value="/forbid-user")
-    public JSONObject forbid_user(@RequestParam("user_id")Integer user_id) {
-        JSONObject response = new JSONObject();
+    public JsonResult forbid_user(@RequestParam("user_id")Integer user_id) {
         boolean result = userAuthService.forbidUserById(user_id);
         if(result){
-            response.put("code",200);
-            response.put("messages","封号成功");
+            return new JsonResult("封号成功");
         }
         else{
-            response.put("code",404);
-            response.put("messages","用户不存在");
+            return new JsonResult(JsonResult.NOT_FOUND,"用户不存在");
         }
-        return response;
     }
 
     @ApiOperation("用户解封")
     @ApiImplicitParams({ @ApiImplicitParam(name = "user_id", value = "用户id", required = true)})
     @GetMapping(value="/permit-user")
-    public JSONObject permit_user(@RequestParam("user_id")Integer user_id) {
-        JSONObject response = new JSONObject();
+    public JsonResult permit_user(@RequestParam("user_id")Integer user_id) {
         boolean result = userAuthService.permitUserById(user_id);
         if(result){
-            response.put("code",200);
-            response.put("messages","解封成功");
+            return new JsonResult("解封成功");
         }
         else{
-            response.put("code",404);
-            response.put("messages","用户未被封号");
+            return new JsonResult(JsonResult.FAIL,"用户未被封号");
         }
-        return response;
     }
 
     @ApiOperation("忘记密码")
@@ -218,19 +210,15 @@ public class UserController {
         @ApiImplicitParam(name = "username", value = "用户名", required = true)
     })
     @GetMapping(value="/forget-password")
-    public JSONObject forget_password(@RequestParam("username")String username) {
-        JSONObject response = new JSONObject();
+    public JsonResult forget_password(@RequestParam("username")String username) {
         UserAuth userAuth = new UserAuth("rediscover",username,"19260817");
         if(userAuthService.isForgetBefore(username)) {
-            response.put("code", 304);
-            response.put("message", "记录成功");
+            return new JsonResult(JsonResult.FAIL,"???");
         }
         else{
             userAuthService.insert(userAuth);
-            response.put("code", 200);
-            response.put("message", "记录成功");
+            return new JsonResult("记录成功");
         }
-        return response;
     }
 
 }

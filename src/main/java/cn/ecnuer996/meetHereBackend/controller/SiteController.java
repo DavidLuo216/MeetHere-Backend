@@ -4,7 +4,7 @@ import cn.ecnuer996.meetHereBackend.model.Site;
 import cn.ecnuer996.meetHereBackend.service.SiteService;
 import cn.ecnuer996.meetHereBackend.service.VenueService;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
-import com.alibaba.fastjson.JSONObject;
+import cn.ecnuer996.meetHereBackend.util.JsonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -36,43 +38,34 @@ public class SiteController {
     @ApiOperation("指定场地信息查询")
     @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "场地id", required = true) })
     @GetMapping(value="/site-detail")
-    public JSONObject getVenues(@RequestParam("id") int id) {
+    public JsonResult getVenues(@RequestParam("id") int id) {
         Site site = siteService.getSiteById(id);
-        JSONObject response = new JSONObject();
         if(site == null) {
-            response.put("code",404);
-            response.put("messages","场地不存在");
-            response.put("result",null);
+            return new JsonResult(JsonResult.NOT_FOUND,"场地不存在");
         }
         else {
-            response.put("code",200);
-            response.put("messages","查询成功");
-            JSONObject result = new JSONObject();
+            Map<String,Object> result=new HashMap<>(4);
             result.put("siteName",site.getName());
             result.put("siteIntro",site.getIntruction());
             result.put("siteUrl", FilePathUtil.URL_SITE_IMAGE_PREFIX + site.getImage());
             result.put("sitePrice",site.getPrice());
-            response.put("result",result);
+            return new JsonResult(result,"查询成功");
         }
-        return response;
     }
 
     @ApiOperation("指定场地可预约时间段查询")
     @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "场地id", required = true),
                          @ApiImplicitParam(name = "date", value = "日期", required = true)})
     @GetMapping(value="/site-time-list")
-    public JSONObject getSiteTimeList(@RequestParam("id")Integer siteId,
+    public JsonResult getSiteTimeList(@RequestParam("id")Integer siteId,
                                       @RequestParam("date")String date){
-        JSONObject response=new JSONObject();
         try{
-            response.put("date",venueService.getSiteTimes(siteId,date));
-            response.put("code",200);
-            response.put("message","成功返回此场地预约时段信息");
+            Map<String,Object> result=new HashMap<>(1);
+            result.put("times",venueService.getSiteTimes(siteId,date));
+            return new JsonResult(result,"查询成功");
         }catch(ParseException parseException){
-            response.put("code",500);
-            response.put("message","日期参数格式不正确");
+            return new JsonResult(JsonResult.FAIL,"日期参数格式不正确");
         }
-        return response;
     }
 
 }
