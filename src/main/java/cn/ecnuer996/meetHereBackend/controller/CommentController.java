@@ -2,7 +2,7 @@ package cn.ecnuer996.meetHereBackend.controller;
 
 import cn.ecnuer996.meetHereBackend.model.Comment;
 import cn.ecnuer996.meetHereBackend.service.CommentService;
-import com.alibaba.fastjson.JSONObject;
+import cn.ecnuer996.meetHereBackend.util.JsonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -33,30 +35,24 @@ public class CommentController {
         @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
         @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)
     })
-    public JSONObject getGlobalComments(
+    public JsonResult getGlobalComments(
         @RequestParam("segment")Integer segment,
         @RequestParam("page")Integer page) {
-        JSONObject response = new JSONObject();
         ArrayList<Comment> wholeComments = commentService.getWholeComments();
         Integer len = wholeComments.size();
         if(len > 0) {
-            response.put("code", 200);
-            response.put("message", "查找成功");
-            response.put("num_of_pages", Math.max((int) Math.ceil(len / (double) segment), 1));
-
-            ArrayList<Comment> result = new ArrayList<>();
+            Map<String,Object> result=new HashMap<>(2);
+            ArrayList<Comment> comments = new ArrayList<>();
             for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, len); ++i){
-                result.add(wholeComments.get(i));
+                comments.add(wholeComments.get(i));
             }
-
-            response.put("result", result);
+            result.put("comments",comments);
+            result.put("num_of_pages",Math.max((int) Math.ceil(len / (double) segment), 1));
+            return new JsonResult(result,"查找成功");
         }
         else {
-            response.put("code", 404);
-            response.put("message", "列表为空");
-            response.put("result", null);
+            return new JsonResult(JsonResult.NOT_FOUND,"列表为空");
         }
-        return response;
     }
 
     @ApiOperation("获取场馆评论")
@@ -66,33 +62,25 @@ public class CommentController {
         @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
         @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)
     })
-    public JSONObject getVenueComments(
+    public JsonResult getVenueComments(
         @RequestParam("venueId")Integer link,
         @RequestParam("segment")Integer segment,
         @RequestParam("page")Integer page) {
-        JSONObject response = new JSONObject();
-
         ArrayList<Comment> venueComments = commentService.getVenueComments(link);
         Integer len = venueComments.size();
         if(len > 0) {
-            response.put("code", 200);
-            response.put("message", "查找成功");
-            response.put("num_of_pages", Math.max((int) Math.ceil(len / (double) segment), 1));
-
-            ArrayList<Comment> result = new ArrayList<>();
+            Map<String,Object> result=new HashMap<>(2);
+            ArrayList<Comment> comments = new ArrayList<>();
             for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, len); ++i){
-                result.add(venueComments.get(i));
+                comments.add(venueComments.get(i));
             }
-
-            response.put("result", result);
+            result.put("comments",comments);
+            result.put("num_of_pages",Math.max((int) Math.ceil(len / (double) segment), 1));
+            return new JsonResult(result,"查找成功");
         }
         else {
-            response.put("code", 404);
-            response.put("message", "列表为空");
-            response.put("result", null);
+            return new JsonResult(JsonResult.NOT_FOUND,"列表为空");
         }
-
-        return response;
     }
 
     @ApiOperation("获取新闻评论")
@@ -102,33 +90,25 @@ public class CommentController {
         @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
         @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)
     })
-    public JSONObject getNewsComments(
+    public JsonResult getNewsComments(
         @RequestParam("newsId")Integer link,
         @RequestParam("segment")Integer segment,
         @RequestParam("page")Integer page) {
-        JSONObject response = new JSONObject();
-
         ArrayList<Comment> newsComments = commentService.getNewsComments(link);
         Integer len = newsComments.size();
         if(len > 0) {
-            response.put("code", 200);
-            response.put("message", "查找成功");
-            response.put("num_of_pages", Math.max((int) Math.ceil(len / (double) segment), 1));
-
-            ArrayList<Comment> result = new ArrayList<>();
+            Map<String,Object> result=new HashMap<>(2);
+            ArrayList<Comment> comments = new ArrayList<>();
             for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, len); ++i){
-                result.add(newsComments.get(i));
+                comments.add(newsComments.get(i));
             }
-
-            response.put("result", result);
+            result.put("comments",comments);
+            result.put("num_of_pages",Math.max((int) Math.ceil(len / (double) segment), 1));
+            return new JsonResult(result,"查找成功");
         }
         else {
-            response.put("code", 404);
-            response.put("message", "列表为空");
-            response.put("result", null);
+            return new JsonResult(JsonResult.NOT_FOUND,"列表为空");
         }
-
-        return response;
     }
 
     @ApiOperation("删除评论")
@@ -136,26 +116,23 @@ public class CommentController {
         @ApiImplicitParams({
         @ApiImplicitParam(name = "id", value = "评论编号", required = true)
     })
-    public JSONObject deleteComment(
+    public JsonResult deleteComment(
         @RequestParam("id")Integer id) {
-        JSONObject response = new JSONObject();
         boolean judge = commentService.detectComment(id);
         if(judge) {
-            response.put("code", 200);
-            response.put("message", "删除成功");
             commentService.deleteComment(id);
+            return new JsonResult("删除成功");
         }
         else {
-            response.put("code", 400);
-            response.put("message", "无此评论");
+            return new JsonResult(JsonResult.NOT_FOUND,"无此评论");
         }
-        return response;
     }
 
     @ApiOperation("恢复评论")
     @GetMapping(value="/discover-comments")
-    public void discoverComment() {
+    public JsonResult discoverComment() {
         commentService.discoverComments();
+        return new JsonResult();
     }
 
     @ApiOperation("新增全局评论")
@@ -164,21 +141,17 @@ public class CommentController {
         @ApiImplicitParam(name = "userId", value = "用户编号", required = true),
         @ApiImplicitParam(name = "content", value = "评论内容", required = true)
     })
-    public JSONObject addGlobalComment(
+    public JsonResult addGlobalComment(
         @RequestParam("userId")Integer userId,
         @RequestParam("content")String content) {
-        JSONObject response = new JSONObject();
         if(userId > 90000) {
-            response.put("code", 200);
-            response.put("message", "发布成功");
             Comment comment = new Comment(commentService.getNextId("1"), "1", userId, content, 1);
             commentService.addGlobalComment(comment);
+            return new JsonResult("发布成功");
         }
         else{
-            response.put("code", 400);
-            response.put("message", "无此权限");
+            return new JsonResult(JsonResult.FAIL,"无此权限");
         }
-        return response;
     }
 
     @ApiOperation("新增场馆评论")
@@ -188,16 +161,13 @@ public class CommentController {
             @ApiImplicitParam(name = "content", value = "评论内容", required = true),
             @ApiImplicitParam(name = "venueId", value = "场馆编号", required = true)
     })
-    public JSONObject addVenueComment(
+    public JsonResult addVenueComment(
             @RequestParam("userId")Integer userId,
             @RequestParam("content")String content,
             @RequestParam("venueId")Integer link) {
-        JSONObject response = new JSONObject();
-        response.put("code", 200);
-        response.put("message", "评论成功");
         Comment comment = new Comment(commentService.getNextId("2"), "2", userId, content, link);
         commentService.addGlobalComment(comment);
-        return response;
+        return new JsonResult("评论成功");
     }
 
     @ApiOperation("新增新闻评论")
@@ -207,16 +177,13 @@ public class CommentController {
             @ApiImplicitParam(name = "content", value = "评论内容", required = true),
             @ApiImplicitParam(name = "newsId", value = "新闻编号", required = true)
     })
-    public JSONObject addNewsComment(
+    public JsonResult addNewsComment(
             @RequestParam("userId")Integer userId,
             @RequestParam("content")String content,
             @RequestParam("newsId")Integer link) {
-        JSONObject response = new JSONObject();
-        response.put("code", 200);
-        response.put("message", "评论成功");
         Comment comment = new Comment(commentService.getNextId("3"), "3", userId, content, link);
         commentService.addGlobalComment(comment);
-        return response;
+        return new JsonResult("评论成功");
     }
 
 }
