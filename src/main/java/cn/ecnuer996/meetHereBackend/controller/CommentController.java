@@ -144,14 +144,9 @@ public class CommentController {
     public JsonResult addGlobalComment(
         @RequestParam("userId")Integer userId,
         @RequestParam("content")String content) {
-        if(userId > 90000) {
-            Comment comment = new Comment(commentService.getNextId("1"), "1", userId, content, 1);
-            commentService.addGlobalComment(comment);
-            return new JsonResult("发布成功");
-        }
-        else{
-            return new JsonResult(JsonResult.FAIL,"无此权限");
-        }
+        Comment comment = new Comment(commentService.getNextId("1"), "1", userId, content, 1);
+        commentService.addGlobalComment(comment);
+        return new JsonResult("发布成功");
     }
 
     @ApiOperation("新增场馆评论")
