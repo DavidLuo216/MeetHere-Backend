@@ -78,7 +78,7 @@ class NewsControllerTest {
                 .value("200"))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.message")
-                        .value("请求成功"))
+                        .value("操作成功！"))
                 .andExpect(MockMvcResultMatchers
                 .jsonPath("$.result")
                 .isNotEmpty());
@@ -93,7 +93,7 @@ class NewsControllerTest {
                 .param("newsId","1"))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.code")
-                        .value("500"))
+                        .value("400"))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.message")
                         .value("请求失败"));
@@ -112,7 +112,7 @@ class NewsControllerTest {
                         .value("200"))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.message")
-                        .value("请求成功"))
+                        .value("操作成功！"))
                 .andExpect(MockMvcResultMatchers
                 .jsonPath("$.result")
                 .isNotEmpty());
@@ -127,7 +127,7 @@ class NewsControllerTest {
                 .param("newsId","1"))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.code")
-                        .value("500"))
+                        .value("400"))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.message")
                         .value("请求失败"));

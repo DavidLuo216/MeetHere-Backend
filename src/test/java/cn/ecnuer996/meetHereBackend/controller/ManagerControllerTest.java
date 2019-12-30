@@ -75,7 +75,7 @@ class ManagerControllerTest {
         .content(requestJson.toJSONString()))
                 .andExpect(MockMvcResultMatchers
                 .jsonPath("$.code")
-                .value("500"))
+                .value("404"))
                 .andExpect(MockMvcResultMatchers
                 .jsonPath("$.message")
                 .value("不存在的管理员"));

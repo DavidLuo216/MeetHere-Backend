@@ -53,7 +53,7 @@ public class ManagerController {
     @PostMapping("/manager-sign-in")
     public JsonResult logIn(@RequestBody Manager managerParam){
         String name=managerParam.getName();
-        String password=managerParam.getAvatar();
+        String password=managerParam.getPassword();
         Manager manager=managerService.getManagerByName(name);
         if(manager==null){
             return new JsonResult(JsonResult.NOT_FOUND,"不存在的管理员");
