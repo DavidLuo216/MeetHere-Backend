@@ -35,8 +35,14 @@
   - 指定新闻详细内容查询
 - 评论相关
   - 指定新闻评论一览（分页）
+    id:news-comments
+    paras:newsId,segment,page
   - 指定场馆评论一览（分页）
+    id:venue-comments
+    paras:venueId,segment,page
   - 网站评论（留言）一览（分页）
+    id:global-comments
+    paras:segment,page
 
 ## 用户功能
 
@@ -52,6 +58,7 @@
   - 取消该用户未完成的某个订单
 - 评论管理
   - 评论场馆/新闻/网站
+  
   - 修改该用户的某条评论
   - 删除该用户的某条评论
 

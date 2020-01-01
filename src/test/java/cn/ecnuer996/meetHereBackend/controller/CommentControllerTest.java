@@ -74,4 +74,90 @@ public class CommentControllerTest {
                         .isEmpty());
     }
 
+    @Test
+    @DisplayName("获取场馆评论成功")
+    void testVenueCommentsSuccess() throws Exception {
+        ArrayList<Comment> comments = new ArrayList<>();
+        comments.add(new Comment());
+        when(commentService.getVenueComments(1)).thenReturn(comments);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/venue-comments")
+                .param("venueId","1")
+                .param("segment","2")
+                .param("page","0"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.message")
+                        .value("查找成功"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("获取场馆评论失败")
+    void testVenueCommentsError() throws Exception {
+        ArrayList<Comment> comments = new ArrayList<>();
+        when(commentService.getVenueComments(1)).thenReturn(comments);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/global-comments")
+                .param("venueId","1")
+                .param("segment","2")
+                .param("page","0"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("404"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.message")
+                        .value("列表为空"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isEmpty());
+    }
+
+    @Test
+    @DisplayName("获取新闻评论成功")
+    void testNewsCommentsSuccess() throws Exception {
+        ArrayList<Comment> comments = new ArrayList<>();
+        comments.add(new Comment());
+        when(commentService.getNewsComments(1)).thenReturn(comments);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/news-comments")
+                .param("newsId","1")
+                .param("segment","2")
+                .param("page","0"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.message")
+                        .value("查找成功"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("获取新闻评论失败")
+    void testNewsCommentsError() throws Exception {
+        ArrayList<Comment> comments = new ArrayList<>();
+        when(commentService.getVenueComments(1)).thenReturn(comments);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/global-comments")
+                .param("venueId","1")
+                .param("segment","2")
+                .param("page","0"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("404"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.message")
+                        .value("列表为空"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isEmpty());
+    }
+
 }
