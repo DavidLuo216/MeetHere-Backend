@@ -13,12 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.print.attribute.HashAttributeSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
@@ -40,6 +37,7 @@ class NewsControllerTest {
     }
 
     @Test
+    @DisplayName("成功获取所有新闻")
     void getAllNews() throws Exception {
         ArrayList<News> newsList=new ArrayList<>();
         for(int i=0;i<10;++i){

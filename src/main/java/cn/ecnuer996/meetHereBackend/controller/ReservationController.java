@@ -157,7 +157,7 @@ public class ReservationController {
             reservationDetail=venueService.getLatestReservation(userId);
         }catch(ParseException pe){
             pe.printStackTrace();
-            new JsonResult(JsonResult.FAIL,"预定失败");
+            return new JsonResult(JsonResult.FAIL,"时间格式错误");
         }
         Map<String,Object> result=new HashMap<>(1);
         result.put("detail",reservationDetail);
