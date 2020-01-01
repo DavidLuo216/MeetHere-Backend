@@ -38,7 +38,7 @@ public class SiteController {
     @ApiOperation("指定场地信息查询")
     @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "场地id", required = true) })
     @GetMapping(value="/site-detail")
-    public JsonResult getVenues(@RequestParam("id") int id) {
+    public JsonResult getSiteDetail(@RequestParam("id") int id) {
         Site site = siteService.getSiteById(id);
         if(site == null) {
             return new JsonResult(JsonResult.NOT_FOUND,"场地不存在");
