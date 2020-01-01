@@ -22,14 +22,30 @@ import java.util.*;
 @Service("VenueService")
 public class VenueService {
 
-    @Autowired
     private VenueMapper venueDao;
-    @Autowired
+
     private SiteMapper siteDao;
-    @Autowired
+
     private VenueImageMapper venueImageDao;
-    @Autowired
+
     private ReservationMapper reservationDao;
+
+    @Autowired
+    public void setVenueDao(VenueMapper venueDao) {
+        this.venueDao = venueDao;
+    }
+    @Autowired
+    public void setSiteDao(SiteMapper siteDao) {
+        this.siteDao = siteDao;
+    }
+    @Autowired
+    public void setVenueImageDao(VenueImageMapper venueImageDao) {
+        this.venueImageDao = venueImageDao;
+    }
+    @Autowired
+    public void setReservationDao(ReservationMapper reservationDao) {
+        this.reservationDao = reservationDao;
+    }
 
     /**
      * 预定的最小时间单元，单位为分钟
@@ -70,13 +86,13 @@ public class VenueService {
         return (ArrayList<VenueInList>) listVenues;
     }
 
-    public JSONObject getVenueDetail(int venue_id){
+    public Map<String, Object> getVenueDetail(int venue_id){
         Venue venue=venueDao.selectByPrimaryKey(venue_id);
         List<String> images=venueImageDao.getVenueImagesByVenueId(venue_id);
         for(int i=0;i<images.size();++i){
             images.set(i,FilePathUtil.URL_VENUE_COVER_PREFIX+images.get(i));
         }
-        JSONObject venueDetail=new JSONObject();
+        Map<String,Object> venueDetail=new HashMap<>(9);
         SimpleDateFormat formatter=new SimpleDateFormat("HH:mm");
         //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
         formatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
@@ -93,7 +109,7 @@ public class VenueService {
         return venueDetail;
     }
 
-    public JSONObject getSiteTimes(int siteId,String date) throws ParseException {
+    public Map<String, Object> getSiteTimes(int siteId, String date) throws ParseException {
         SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
         //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
         formatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
@@ -109,9 +125,7 @@ public class VenueService {
         int endId=endMinutes/ReservationPeriod;
 
         int[] bookableList=new int[48];
-        for(int i=0;i<bookableList.length;++i){
-            bookableList[i]=-1;
-        }
+        Arrays.fill(bookableList, -1);
         for(int i=beginId;i<endId;++i){
             bookableList[i]=0;
         }
@@ -121,10 +135,10 @@ public class VenueService {
                 bookableList[i]=1;
             }
         }
-        JSONObject ret=new JSONObject();
-        List<JSONObject> siteTimes=new ArrayList<JSONObject>();
+        Map<String,Object> ret=new HashMap<>(2);
+        List<Map<String,Object>> siteTimes=new ArrayList<>();
         for(int i=0;i<bookableList.length;++i){
-            JSONObject siteTime=new JSONObject();
+            Map<String,Object> siteTime=new HashMap<>(3);
             siteTime.put("period",simplePrintPeriod(i));
             siteTime.put("bookable",bookableList[i]);
             siteTime.put("periodId",i);

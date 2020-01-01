@@ -103,8 +103,8 @@ public class VenueController {
     @ApiOperation("指定场馆信息查询")
     @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "场馆id", required = true) })
     @GetMapping(value="/venue-detail")
-    public JSONObject getVenueDetail(@RequestParam("id")Integer venueId){
-        return venueService.getVenueDetail(venueId);
+    public JsonResult getVenueDetail(@RequestParam("id")Integer venueId){
+        return new JsonResult(venueService.getVenueDetail(venueId),"查询成功！");
     }
 
     @ApiOperation("新增场馆")
