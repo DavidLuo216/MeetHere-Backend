@@ -83,7 +83,7 @@ public class ReservationController {
         for(Integer venueSiteId : venueSiteIds){
             site2venue.put(venueSiteId % 10000,venueSiteId / 10000);
         }
-        Map venue2times = new HashMap<Integer,Integer>();
+        Map venue2times = new HashMap<Integer, Integer>();
         for(Integer siteId : siteIds) {
             int venueId = (Integer)site2venue.get(siteId);
             if(venue2times.containsKey(venueId)) {
@@ -108,8 +108,7 @@ public class ReservationController {
             topNVenues.rank = i + 1;
             topNVenues.venueId = venueWithTimes.get(i) % 10000;
             topNVenues.times = venueWithTimes.get(i) / 10000;
-            venues.add(topNVenues
-            );
+            venues.add(topNVenues);
         }
 
         Map<String,Object> result=new HashMap<>(1);
