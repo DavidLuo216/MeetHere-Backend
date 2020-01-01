@@ -53,4 +53,9 @@ public class CommentService {
         return Integer.parseInt(type) * 10000 + commentDao.getNextId(type) + 1;
     }
 
+    /* Functions for SpringBoot Testing are Shown as Follows */
+    public Comment getSingleComment (Integer id) {
+        return commentDao.selectByPrimaryKey(id);
+    }
+
 }
