@@ -35,8 +35,14 @@
   - 指定新闻详细内容查询
 - 评论相关
   - 指定新闻评论一览（分页）
+    id:news-comments
+    paras:newsId[新闻编号],segment[单页限额],page[指定页码]
   - 指定场馆评论一览（分页）
+    id:venue-comments
+    paras:venueId[场馆编号],segment[单页限额],page[指定页码]
   - 网站评论（留言）一览（分页）
+    id:global-comments
+    paras:segment[单页限额],page[指定页码]
 
 ## 用户功能
 
@@ -77,3 +83,5 @@
   - 订单统计（统计总订单数最多的 10 个场馆）
 - 评论管理
   - 删除
+    id:delete-comment
+    paras:id[评论编号]
