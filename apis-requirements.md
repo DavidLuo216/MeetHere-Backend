@@ -57,9 +57,19 @@
   - 查询该用户的所有订单（分页）
   - 取消该用户未完成的某个订单
 - 评论管理
-  - 评论场馆/新闻/网站
+  - 评论网站/场馆/新闻
+    id:add-global-comment
+    paras:userId[用户编号],content[评论文本]
+    id:add-venue-content
+    paras:userId[用户编号],content[评论文本],venueId[场馆编号]
+    id:add-news-comment
+    paras:userId[用户编号],content[评论文本],newsId[新闻编号]
   - 修改该用户的某条评论
+    id:modify-comment
+    paras:userId[用户编号],commentId[评论编号],content[评论文本]
   - 删除该用户的某条评论
+    id:delete-comment
+    paras:id[评论编号]
 
 ## 管理员功能
 

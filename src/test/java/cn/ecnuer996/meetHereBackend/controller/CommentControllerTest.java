@@ -141,21 +141,6 @@ public class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("删除评论成功")
-    void testDeleteCommentSuccess() throws Exception {
-        when(commentService.detectComment(anyInt())).thenReturn(true);
-        mockMvc.perform(MockMvcRequestBuilders
-                .get("/delete-comment")
-                .param("id","20007"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.code")
-                        .value("200"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.result")
-                        .isNotEmpty());
-    }
-
-    @Test
     @DisplayName("获取新闻评论失败")
     void testNewsCommentsError() throws Exception {
         ArrayList<Comment> comments = new ArrayList<>();
@@ -177,7 +162,22 @@ public class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("删除评论评论失败")
+    @DisplayName("删除评论成功")
+    void testDeleteCommentSuccess() throws Exception {
+        when(commentService.detectComment(anyInt())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/delete-comment")
+                .param("id","20007"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("删除评论失败")
     void testDeleteCommentError() throws Exception {
         when(commentService.detectComment(19260817)).thenReturn(false);
         mockMvc.perform(MockMvcRequestBuilders
@@ -189,6 +189,30 @@ public class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.result")
                         .isEmpty());
+    }
+
+    @Test
+    @DisplayName("新增全局评论成功")
+    void testAddGlobalCommentSuccess() {
+
+    }
+
+    @Test
+    @DisplayName("新增场馆评论成功")
+    void testAddVenueCommentSuccess() {
+
+    }
+
+    @Test
+    @DisplayName("新增新闻评论成功")
+    void testAddNewsCommentSuccess() {
+
+    }
+
+    @Test
+    @DisplayName("修改用户评论成功")
+    void testModifyUserCommentSuccess() {
+
     }
 
 }
