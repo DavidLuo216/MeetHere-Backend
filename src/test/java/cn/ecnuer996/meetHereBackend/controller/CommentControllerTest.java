@@ -16,6 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -140,6 +141,21 @@ public class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("删除评论成功")
+    void testDeleteCommentSuccess() throws Exception {
+        when(commentService.detectComment(anyInt())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/delete-comment")
+                .param("id","20007"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
+    }
+
+    @Test
     @DisplayName("获取新闻评论失败")
     void testNewsCommentsError() throws Exception {
         ArrayList<Comment> comments = new ArrayList<>();
@@ -155,6 +171,21 @@ public class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.message")
                         .value("列表为空"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isEmpty());
+    }
+
+    @Test
+    @DisplayName("删除评论评论失败")
+    void testDeleteCommentError() throws Exception {
+        when(commentService.detectComment(19260817)).thenReturn(false);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/delete-comment")
+                .param("id","19260817"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("404"))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.result")
                         .isEmpty());
