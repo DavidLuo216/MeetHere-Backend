@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -103,7 +103,7 @@ public class CommentControllerTest {
         ArrayList<Comment> comments = new ArrayList<>();
         when(commentService.getVenueComments(1)).thenReturn(comments);
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/global-comments")
+                .get("/venue-comments")
                 .param("venueId","1")
                 .param("segment","2")
                 .param("page","0"))
@@ -146,8 +146,8 @@ public class CommentControllerTest {
         ArrayList<Comment> comments = new ArrayList<>();
         when(commentService.getVenueComments(1)).thenReturn(comments);
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/global-comments")
-                .param("venueId","1")
+                .get("/news-comments")
+                .param("newsId","1")
                 .param("segment","2")
                 .param("page","0"))
                 .andExpect(MockMvcResultMatchers
@@ -193,26 +193,72 @@ public class CommentControllerTest {
 
     @Test
     @DisplayName("新增全局评论成功")
-    void testAddGlobalCommentSuccess() {
-
+    void testAddGlobalCommentSuccess() throws Exception {
+        when(commentService.getNextId("1")).thenReturn(5);
+        when(commentService.addGlobalComment(any())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/add-global-comment")
+                .param("userId","1")
+                .param("content",""))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
     }
 
     @Test
     @DisplayName("新增场馆评论成功")
-    void testAddVenueCommentSuccess() {
-
+    void testAddVenueCommentSuccess() throws Exception {
+        when(commentService.getNextId("2")).thenReturn(5);
+        when(commentService.addGlobalComment(any())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/add-venue-comment")
+                .param("userId", "1")
+                .param("content","")
+                .param("venueId", "1"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
     }
 
     @Test
     @DisplayName("新增新闻评论成功")
-    void testAddNewsCommentSuccess() {
-
+    void testAddNewsCommentSuccess() throws Exception {
+        when(commentService.getNextId("3")).thenReturn(5);
+        when(commentService.addGlobalComment(any())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/add-news-comment")
+                .param("userId", "1")
+                .param("content","")
+                .param("newsId", "1"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
     }
 
     @Test
     @DisplayName("修改用户评论成功")
-    void testModifyUserCommentSuccess() {
-
+    void testModifyUserCommentSuccess() throws Exception {
+        when(commentService.modifyUserComment(any(), any(), any())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/modify-comment")
+                .param("commentId","1")
+                .param("userId","1")
+                .param("content","."))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
     }
 
 }

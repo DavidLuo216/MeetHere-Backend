@@ -45,16 +45,18 @@ public class CommentService {
         commentDao.discoverComments();
     }
 
-    public void addGlobalComment(Comment comment) {
+    public boolean addGlobalComment(Comment comment) {
         commentDao.addGlobalComment(comment);
+        return true;
     }
 
     public Integer getNextId(String type) {
         return Integer.parseInt(type) * 10000 + commentDao.getNextId(type) + 1;
     }
 
-    public void modifyUserComment(Integer userId, Integer commentId, String content) {
+    public boolean modifyUserComment(Integer userId, Integer commentId, String content) {
         commentDao.modifyUserComment(userId, commentId, content);
+        return true;
     }
 
 }

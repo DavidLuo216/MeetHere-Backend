@@ -33,7 +33,7 @@ public interface CommentMapper {
 
     void discoverComments();
 
-    void addGlobalComment(Comment comment);
+    boolean addGlobalComment(Comment comment);
 
     Integer getNextId(String type);
 
