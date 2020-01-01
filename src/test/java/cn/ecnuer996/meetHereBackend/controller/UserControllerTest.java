@@ -12,13 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.multipart.MultipartFile;
 
 import static org.mockito.Mockito.*;
 
@@ -217,6 +215,33 @@ class UserControllerTest {
     }
 
     @Test
-    void forget_password() {
+    @DisplayName("忘记密码成功")
+    void forgetPasswordSuccess() throws Exception {
+        when(userAuthService.isForgetBefore(anyString())).thenReturn(false);
+        when(userAuthService.insert(any())).thenReturn(0);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/forget-password")
+                .param("username","Ethereality"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("忘记密码失败")
+    void forgetPasswordFail() throws Exception {
+        when(userAuthService.isForgetBefore(anyString())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/forget-password")
+                .param("username","Ethereality"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("400"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isEmpty());
     }
 }

@@ -1,7 +1,9 @@
 package cn.ecnuer996.meetHereBackend.controller;
 
 import cn.ecnuer996.meetHereBackend.model.Manager;
+import cn.ecnuer996.meetHereBackend.model.UserAuth;
 import cn.ecnuer996.meetHereBackend.service.ManagerService;
+import cn.ecnuer996.meetHereBackend.service.UserAuthService;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
+
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,6 +32,8 @@ class ManagerControllerTest {
     private WebApplicationContext webApplicationContext;
     @MockBean
     private ManagerService managerService;
+    @MockBean
+    private UserAuthService userAuthService;
 
     private MockMvc mockMvc;
 
@@ -103,14 +110,65 @@ class ManagerControllerTest {
     }
 
     @Test
-    void getForgetUsers() {
+    @DisplayName("查看忘记密码用户空列表")
+    void getForgetUsersEmptyList() throws Exception {
+        when(userAuthService.getForgetUserAuths()).thenReturn(new ArrayList<>());
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/get-forget-users"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("404"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isEmpty());
     }
 
     @Test
-    void acceptRediscover() {
+    @DisplayName("查看忘记密码用户非空列表")
+    void getForgetUsersNotEmptyList() throws Exception {
+        ArrayList<UserAuth> userAuths = new ArrayList<>();
+        UserAuth userAuth = new UserAuth();
+        userAuth.setIdentifier("Ethereality");
+        userAuth.setCredential("hahaha");
+        userAuths.add(userAuth);
+        when(userAuthService.getForgetUserAuths()).thenReturn(userAuths);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/get-forget-users"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
     }
 
     @Test
-    void refuseRediscover() {
+    @DisplayName("同意找回密码")
+    void acceptRediscover() throws Exception {
+        when(userAuthService.acceptRediscover(anyString())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/accept-rediscover")
+                .param("username", "Ethereality"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isEmpty());
+    }
+
+    @Test
+    @DisplayName("拒绝找回密码")
+    void refuseRediscover() throws Exception {
+        when(userAuthService.refuseRediscover(anyString())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/refuse-rediscover")
+                .param("username", "Ethereality"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isEmpty());
     }
 }

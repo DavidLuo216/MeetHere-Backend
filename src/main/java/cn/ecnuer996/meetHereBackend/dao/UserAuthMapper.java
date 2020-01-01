@@ -26,9 +26,9 @@ public interface UserAuthMapper {
 
     UserAuth getIllegalUserAuthById(int user_id);
 
-    void forbidUserById(int user_id);
+    boolean forbidUserById(int user_id);
 
-    void permitUserById(int user_id);
+    boolean permitUserById(int user_id);
 
     UserAuth isForgetBefore(String username);
 

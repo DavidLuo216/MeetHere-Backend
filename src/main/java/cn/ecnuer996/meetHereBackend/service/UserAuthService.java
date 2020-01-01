@@ -63,12 +63,14 @@ public class UserAuthService {
         return userAuthDao.getForgetUserAuths();
     }
 
-    public void acceptRediscover(String username) {
+    public boolean acceptRediscover(String username) {
         userAuthDao.acceptRediscover(username);
+        return true;
     }
 
-    public void refuseRediscover(String username) {
+    public boolean refuseRediscover(String username) {
         userAuthDao.refuseRediscover(username);
+        return true;
     }
 
 }
