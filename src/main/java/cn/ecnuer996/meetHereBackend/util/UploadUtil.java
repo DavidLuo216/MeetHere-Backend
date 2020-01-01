@@ -17,7 +17,7 @@ public class UploadUtil {
      * @param toDelete 要更新文件的路径
      * @return 更新文件成功则返回true
      */
-    public static boolean updateFile(MultipartFile newFile,String dest,String toDelete){
+    public boolean updateFile(MultipartFile newFile,String dest,String toDelete){
         File originalFile=new File(toDelete);
         if (originalFile.exists()){
             // fail to delete original file
@@ -41,7 +41,7 @@ public class UploadUtil {
      * @param dest 文件保存路径
      * @return
      */
-    public static boolean upload(MultipartFile newFile,String dest){
+    public boolean upload(MultipartFile newFile,String dest){
         File destFile=new File(dest);
         try{
             newFile.transferTo(destFile);

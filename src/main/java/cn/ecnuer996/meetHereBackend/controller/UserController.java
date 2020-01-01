@@ -54,10 +54,6 @@ public class UserController {
             String message="";
             if("nickname".equals(signInMethod)){
                 message="密码错误！";
-            }else if("phone".equals(signInMethod)){
-                message="手机验证码错误！";
-            }else if("email".equals(signInMethod)){
-                message="邮箱验证码错误！";
             }
             return new JsonResult(JsonResult.FAIL,message);
         }else {
@@ -78,10 +74,6 @@ public class UserController {
         String password=postBody.getString("password");
         if(userAuthService.getBySignInMethod("nickname",nickname)!=null){
             return new JsonResult(JsonResult.FAIL,"用户名已被使用！");
-        }else if(userAuthService.getBySignInMethod("phone",phone)!=null){
-            return new JsonResult(JsonResult.FAIL,"手机号已被注册！");
-        }else if(userAuthService.getBySignInMethod("email",email)!=null){
-            return new JsonResult(JsonResult.FAIL,"邮箱已被注册！");
         }else{
             User user=new User();
             user.setId(null);
@@ -121,8 +113,10 @@ public class UserController {
 
     @ApiOperation("更新用户头像")
     @PostMapping(value = "/update-avatar")
-    public JsonResult updateAvatar(@RequestParam MultipartFile avatar,@RequestParam int userId){
+    public JsonResult updateAvatar(@RequestParam("avatar") MultipartFile avatar,
+                                   @RequestParam("userId") int userId){
         User user=userService.getUserById(userId);
+        UploadUtil uploadUtil=new UploadUtil();
         if (user==null){
             return new JsonResult(JsonResult.FAIL,"不存在的用户！");
         }else{
@@ -136,10 +130,10 @@ public class UserController {
             //用户头像不为默认头像，需要删除旧头像，即更新头像文件
             if(!"default.jpg".equals(user.getAvatar())){
                 String fileToDelete=FilePathUtil.LOCAL_USER_AVATAR_PREFIX+user.getAvatar();
-                uploadResult=UploadUtil.updateFile(avatar,fileToSave,fileToDelete);
+                uploadResult=uploadUtil.updateFile(avatar,fileToSave,fileToDelete);
             }else{
                 //不需要删除默认头像
-                uploadResult=UploadUtil.upload(avatar,fileToSave);
+                uploadResult=uploadUtil.upload(avatar,fileToSave);
             }
             if(uploadResult){
                 //更新图片成功
