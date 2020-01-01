@@ -101,4 +101,16 @@ class ManagerControllerTest {
                         .jsonPath("$.message")
                         .value("密码错误"));
     }
+
+    @Test
+    void getForgetUsers() {
+    }
+
+    @Test
+    void acceptRediscover() {
+    }
+
+    @Test
+    void refuseRediscover() {
+    }
 }
