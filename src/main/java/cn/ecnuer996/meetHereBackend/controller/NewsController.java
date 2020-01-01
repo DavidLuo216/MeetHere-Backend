@@ -62,21 +62,14 @@ public class NewsController {
                               @RequestParam("time")String time,
                               @RequestParam("title")String title,
                               @RequestParam("content")String content,
-                              @RequestParam("images")MultipartFile[] images){
+                              @RequestParam("images")MultipartFile[] images) throws ParseException {
         News news = new News();
         news.setManagerId(managerId);
-        try {
-            news.setTime(format.parse(time));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        news.setTime(format.parse(time));
         news.setTitle(title);
         news.setContent(content);
         newsService.addNews(news);
         News newsInserted=newsService.getNewsByTitle(title);
-        if(newsInserted==null){
-            return new JsonResult(JsonResult.FAIL,"插入数据库失败");
-        }
         int newsId=newsInserted.getId();
         for(MultipartFile image:images){
             String fileName=image.getOriginalFilename();
