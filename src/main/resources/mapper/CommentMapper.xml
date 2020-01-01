@@ -138,6 +138,12 @@
     where type = #{type,jdbcType=VARCHAR}
   </select>
 
+  <update id="modifyUserComment" parameterType="cn.ecnuer996.meetHereBackend.model.Comment">
+    update comment
+    set content = #{content,jdbcType=VARCHAR}
+    where id = #{commentId,jdbcType=INTEGER} and user_id = #{commentId,jdbcType=VARCHAR}
+  </update>
+
   <!-- Personal SQL Finish -->
 
 </mapper>

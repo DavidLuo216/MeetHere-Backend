@@ -33,7 +33,7 @@ public class CommentService {
     }
 
     public boolean detectComment(Integer id) {
-        ArrayList<Comment> comments =  commentDao.detectComment(id);
+        ArrayList<Comment> comments = commentDao.detectComment(id);
         return comments.size() == 1;
     }
 
@@ -53,9 +53,8 @@ public class CommentService {
         return Integer.parseInt(type) * 10000 + commentDao.getNextId(type) + 1;
     }
 
-    /* Functions for SpringBoot Testing are Shown as Follows */
-    public Comment getSingleComment (Integer id) {
-        return commentDao.selectByPrimaryKey(id);
+    public void modifyUserComment(Integer userId, Integer commentId, String content) {
+        commentDao.modifyUserComment(userId, commentId, content);
     }
 
 }

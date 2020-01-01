@@ -37,5 +37,7 @@ public interface CommentMapper {
 
     Integer getNextId(String type);
 
+    boolean modifyUserComment(Integer userId, Integer commentId, String content);
+
     /* Personal Functions Finish */
 }

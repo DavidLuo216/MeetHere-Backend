@@ -128,12 +128,14 @@ public class CommentController {
         }
     }
 
+    /* 不上线功能，完美无瑕，不作测试，切勿删除
     @ApiOperation("恢复评论")
     @GetMapping(value="/discover-comments")
     public JsonResult discoverComment() {
         commentService.discoverComments();
         return new JsonResult();
     }
+     */
 
     @ApiOperation("新增全局评论")
     @GetMapping(value="/add-global-comment")
@@ -179,6 +181,21 @@ public class CommentController {
         Comment comment = new Comment(commentService.getNextId("3"), "3", userId, content, link);
         commentService.addGlobalComment(comment);
         return new JsonResult("评论成功");
+    }
+
+    @ApiOperation("修改用户评论")
+    @GetMapping(value="/modify-comment")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "commentId", value = "评论编号", required = true),
+            @ApiImplicitParam(name = "userId", value = "用户编号", required = true),
+            @ApiImplicitParam(name = "content", value = "评论内容", required = true)
+    })
+    public JsonResult modifyUserComment(
+            @RequestParam("commentId")Integer newsId,
+            @RequestParam("userId")Integer userId,
+            @RequestParam("content")String content) {
+        commentService.modifyUserComment(userId, newsId, content);
+        return new JsonResult("修改成功");
     }
 
 }
