@@ -18,7 +18,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -28,6 +27,7 @@ class ManagerControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
     @MockBean
     private ManagerService managerService;
     @MockBean
@@ -246,4 +246,5 @@ class ManagerControllerTest {
         verify(venueService,times(5)).getVenueById(anyInt());
         verify(venueService,times(5*2)).simplePrintPeriod(anyInt());
     }
+
 }

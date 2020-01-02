@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 @Repository
 public interface CommentMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(Comment record);
@@ -40,4 +41,5 @@ public interface CommentMapper {
     boolean modifyUserComment(Integer userId, Integer commentId, String content);
 
     /* Personal Functions Finish */
+
 }

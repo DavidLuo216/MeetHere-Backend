@@ -13,6 +13,7 @@ import java.util.ArrayList;
  */
 @Service("ManagerService")
 public class ManagerService {
+
     private ManagerMapper managerDao;
 
     @Autowired
@@ -35,4 +36,5 @@ public class ManagerService {
     public ArrayList<Manager> getAllManagers() {
         return managerDao.getAllManagers();
     }
+
 }

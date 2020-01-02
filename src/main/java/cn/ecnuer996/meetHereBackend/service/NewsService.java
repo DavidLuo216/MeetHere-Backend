@@ -15,6 +15,7 @@ import java.util.List;
 
 @Service
 public class NewsService {
+
     private NewsMapper newsDao;
     private NewsImageMapper newsImageDao;
     private ManagerMapper managerDao;

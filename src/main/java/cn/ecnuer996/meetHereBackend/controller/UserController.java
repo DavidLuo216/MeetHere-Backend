@@ -26,6 +26,7 @@ import java.util.UUID;
 @RestController
 @Api(tags = "用户相关接口")
 public class UserController {
+
     private UserService userService;
     private UserAuthService userAuthService;
 

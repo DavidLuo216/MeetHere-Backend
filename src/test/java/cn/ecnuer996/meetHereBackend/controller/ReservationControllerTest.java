@@ -33,15 +33,13 @@ class ReservationControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
     @MockBean
     private VenueService venueService;
-
     @MockBean
     private ReservationService reservationService;
-
     @MockBean
     private SiteService siteService;
-
     @MockBean
     private UserService userService;
 
@@ -51,7 +49,6 @@ class ReservationControllerTest {
     public void init(){
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
-
 
     @Test
     @DisplayName("成功获取某个场馆的所有场地")

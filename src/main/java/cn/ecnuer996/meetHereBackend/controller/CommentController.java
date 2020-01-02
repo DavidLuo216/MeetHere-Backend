@@ -128,7 +128,8 @@ public class CommentController {
         }
     }
 
-    /* 不上线功能，完美无瑕，不作测试，切勿删除
+    /*
+    不上线功能，完美无瑕，不作测试，切勿删除
     @ApiOperation("恢复评论")
     @GetMapping(value="/discover-comments")
     public JsonResult discoverComment() {

@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.model;
 
 public class Comment {
+
     private Integer id;
 
     private String type;
@@ -62,4 +63,5 @@ public class Comment {
     public void setLink(Integer link) {
         this.link = link;
     }
+
 }

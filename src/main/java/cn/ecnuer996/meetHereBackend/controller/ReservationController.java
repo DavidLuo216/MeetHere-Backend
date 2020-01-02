@@ -33,6 +33,7 @@ public class ReservationController {
     private SiteService siteService;
     private VenueService venueService;
     private ReservationService reservationService;
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -100,7 +101,6 @@ public class ReservationController {
         venueWithTimes.sort(Comparator.reverseOrder());
 
         n = Math.min(n,venueWithTimes.size());
-
         ArrayList<TopNVenues> venues = new ArrayList<>();
 
         for(int i = 0; i < n; ++i){

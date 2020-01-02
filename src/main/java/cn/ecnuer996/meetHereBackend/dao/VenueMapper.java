@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface VenueMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(Venue record);

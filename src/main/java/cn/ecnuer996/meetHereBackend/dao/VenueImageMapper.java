@@ -7,6 +7,7 @@ import java.util.List;
 
 @Repository
 public interface VenueImageMapper {
+
     int insert(VenueImage record);
 
     int insertSelective(VenueImage record);
@@ -14,4 +15,5 @@ public interface VenueImageMapper {
     List<String> getVenueImagesByVenueId(Integer venueId);
 
     String getVenueCoverByVenueId(Integer venueId);
+
 }

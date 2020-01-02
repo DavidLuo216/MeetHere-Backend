@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 @Repository
 public interface ManagerMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(Manager record);

@@ -3,6 +3,7 @@ package cn.ecnuer996.meetHereBackend.model;
 import java.util.Date;
 
 public class News {
+
     private Integer id;
 
     private Integer managerId;
@@ -52,4 +53,5 @@ public class News {
     public void setContent(String content) {
         this.content = content;
     }
+
 }

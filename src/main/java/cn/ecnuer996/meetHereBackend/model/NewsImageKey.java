@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.model;
 
 public class NewsImageKey {
+
     private Integer newsId;
 
     private String image;
@@ -20,4 +21,5 @@ public class NewsImageKey {
     public void setImage(String image) {
         this.image = image == null ? null : image.trim();
     }
+
 }

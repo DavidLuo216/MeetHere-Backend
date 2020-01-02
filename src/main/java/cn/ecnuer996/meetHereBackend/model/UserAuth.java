@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.model;
 
 public class UserAuth {
+
     private Integer userId;
 
     private String identityType;

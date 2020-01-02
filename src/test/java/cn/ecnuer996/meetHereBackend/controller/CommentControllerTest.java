@@ -27,6 +27,7 @@ public class CommentControllerTest {
 
     @MockBean
     private CommentService commentService;
+
     private MockMvc mockMvc;
 
     @BeforeEach

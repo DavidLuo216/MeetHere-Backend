@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 @Repository
 public interface SiteMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(Site record);

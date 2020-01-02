@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 @Repository
 public interface UserAuthMapper {
+
     int insert(UserAuth record);
 
     int insertSelective(UserAuth record);
@@ -17,6 +18,7 @@ public interface UserAuthMapper {
 
     //此函数寻找nickname登陆方式的验证信息
     UserAuth selectNicknameLoginAuth(Integer id);
+
     //根据登录方式和对应ID来获取验证信息
     UserAuth selectBySignInMethod(String method,String identifier);
 

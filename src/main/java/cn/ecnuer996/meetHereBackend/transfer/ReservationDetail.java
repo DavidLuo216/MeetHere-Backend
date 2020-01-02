@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.transfer;
 
 public class ReservationDetail {
+
     private int id;
     private String siteName;
     private String siteImage;
@@ -91,4 +92,5 @@ public class ReservationDetail {
     public void setSiteImage(String siteImage) {
         this.siteImage = siteImage;
     }
+
 }
