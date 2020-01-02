@@ -22,14 +22,6 @@ class VenueControllerTest {
     }
 
     @Test
-    void addVenue() {
-    }
-
-    @Test
-    void updateVenue() {
-    }
-
-    @Test
     void addSite() throws Exception {
 //        File file=new File("F:\\图片\\sea.jpg");
 //        String siteName="new Site";

@@ -6,6 +6,8 @@ import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 /**
  * @author LuoChengLing
  */
@@ -28,5 +30,9 @@ public class ManagerService {
 
     public Manager getManagerByName(String name){
         return managerDao.selectByName(name);
+    }
+
+    public ArrayList<Manager> getAllManagers() {
+        return managerDao.getAllManagers();
     }
 }
