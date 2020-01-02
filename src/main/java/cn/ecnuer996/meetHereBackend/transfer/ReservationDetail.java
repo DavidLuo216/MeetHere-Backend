@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.transfer;
 
 public class ReservationDetail {
+    private int id;
     private String siteName;
     private String siteImage;
     private String venueName;
@@ -10,6 +11,14 @@ public class ReservationDetail {
     private String beginTime;
     private String endTime;
     private String state;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getBeginTime() {
         return beginTime;

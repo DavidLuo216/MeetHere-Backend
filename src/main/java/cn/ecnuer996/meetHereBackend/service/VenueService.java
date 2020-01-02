@@ -200,6 +200,7 @@ public class VenueService {
         Site site=siteDao.selectByPrimaryKey(latestReservation.getSiteId());
         Venue venue=venueDao.selectByPrimaryKey(site.getVenueId());
 
+        reservationDetail.setId(latestReservation.getId());
         reservationDetail.setVenueName(venue.getName());
         reservationDetail.setSiteName(site.getName());
         reservationDetail.setSiteImage(FilePathUtil.URL_SITE_IMAGE_PREFIX+site.getImage());

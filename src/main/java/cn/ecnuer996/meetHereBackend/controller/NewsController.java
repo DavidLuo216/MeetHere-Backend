@@ -57,7 +57,7 @@ public class NewsController {
                          @ApiImplicitParam(name = "time", value = "时间", required = true),
                          @ApiImplicitParam(name = "title", value = "标题", required = true),
                          @ApiImplicitParam(name = "content", value = "内容", required = true)})
-    @PostMapping(value="/add-news")
+    @PostMapping(value="/add-news",consumes = "multipart/form-data")
     public JsonResult addNews(@RequestParam("managerId")Integer managerId,
                               @RequestParam("time")String time,
                               @RequestParam("title")String title,

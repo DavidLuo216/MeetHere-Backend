@@ -198,6 +198,7 @@ public class ReservationController {
                 item.setBeginTime(venueService.simplePrintPeriod(reservation.getBeginTime()));
                 item.setEndTime(venueService.simplePrintPeriod(reservation.getEndTime() + 1));
                 item.setState(ReservationState.states.get(reservation.getState()));
+                item.setId(reservation.getId());
                 /* Calculate Element Value Finish */
                 details.add(item);
             }
