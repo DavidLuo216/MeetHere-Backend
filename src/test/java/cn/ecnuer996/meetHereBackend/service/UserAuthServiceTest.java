@@ -98,4 +98,5 @@ class UserAuthServiceTest {
         userAuthService.refuseRediscover("用户名");
         verify(userAuthDao,times(1)).refuseRediscover("用户名");
     }
+
 }

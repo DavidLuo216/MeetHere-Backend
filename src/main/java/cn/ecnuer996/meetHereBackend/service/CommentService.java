@@ -41,10 +41,6 @@ public class CommentService {
         commentDao.deleteComment(id);
     }
 
-    public void discoverComments() {
-        commentDao.discoverComments();
-    }
-
     public boolean addGlobalComment(Comment comment) {
         commentDao.addGlobalComment(comment);
         return true;

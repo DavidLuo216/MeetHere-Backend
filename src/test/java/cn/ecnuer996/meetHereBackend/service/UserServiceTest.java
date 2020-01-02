@@ -60,4 +60,5 @@ class UserServiceTest {
         userService.update(new User());
         verify(userDao,times(1)).updateByPrimaryKeySelective(isA(User.class));
     }
+
 }

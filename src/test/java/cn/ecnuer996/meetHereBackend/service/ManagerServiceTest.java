@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -34,4 +32,5 @@ class ManagerServiceTest {
         managerService.getManagerByName("管理员名");
         verify(managerDao,times(1)).selectByName("管理员名");
     }
+
 }
