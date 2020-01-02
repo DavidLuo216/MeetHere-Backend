@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -38,6 +40,25 @@ class UserControllerTest {
     @BeforeEach
     public void init(){
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    @Test
+    @DisplayName("根据ID成功查询用户信息")
+    void getUserById() throws Exception {
+        User user=new User();
+        user.setId(1);
+        user.setAvatar("imageName.jpg");
+        when(userService.getUserById(1)).thenReturn(user);
+        mockMvc.perform(MockMvcRequestBuilders
+        .get("/get-user-by-id")
+        .param("id","1"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.code")
+                .value("200"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.result")
+                .isNotEmpty());
+        verify(userService,times(1)).getUserById(1);
     }
 
     @Test
@@ -203,15 +224,95 @@ class UserControllerTest {
     }
 
     @Test
-    void getAllUsers() {
+    @DisplayName("成功分页查询所有用户信息")
+    void getAllUsers() throws Exception {
+        ArrayList<User> users=new ArrayList<>();
+        for (int i=0;i<10;++i){
+            User user=new User();
+            user.setId(i);
+            users.add(user);
+        }
+        when(userService.getAllUsers()).thenReturn(users);
+        mockMvc.perform(MockMvcRequestBuilders
+        .get("/users")
+        .param("segment","5")
+        .param("page","0"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.code")
+                .value("200"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.result.num_of_pages")
+                .value("2"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.result.users")
+                .isNotEmpty());
+        verify(userAuthService,times(1)).getIdentityType(0);
+        verify(userAuthService,times(1)).getIdentityType(4);
+        verify(userAuthService,times(5)).getIdentityType(anyInt());
     }
 
     @Test
-    void forbid_user() {
+    @DisplayName("成功封禁用户")
+    void forbid_user() throws Exception {
+        when(userAuthService.forbidUserById(1)).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+        .get("/forbid-user")
+        .param("user_id","1"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.code")
+                .value("200"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.message")
+                .value("封号成功"));
+        verify(userAuthService,times(1)).forbidUserById(1);
     }
 
     @Test
-    void permit_user() {
+    @DisplayName("试图封禁不存在用户而失败")
+    void forbid_userWhenUserNotExist() throws Exception {
+        when(userAuthService.forbidUserById(-1)).thenReturn(false);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/forbid-user")
+                .param("user_id","-1"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("404"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.message")
+                        .value("用户不存在"));
+        verify(userAuthService,times(1)).forbidUserById(-1);
+    }
+
+    @Test
+    @DisplayName("成功解封用户")
+    void permit_user() throws Exception {
+        when(userAuthService.permitUserById(1)).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/permit-user")
+                .param("user_id","1"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.message")
+                        .value("解封成功"));
+        verify(userAuthService,times(1)).permitUserById(1);
+    }
+
+    @Test
+    @DisplayName("试图解封不存在或未被封禁的用户")
+    void permit_userWhenUserIsNotForbidden() throws Exception {
+        when(userAuthService.permitUserById(-1)).thenReturn(false);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/permit-user")
+                .param("user_id","-1"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("400"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.message")
+                        .value("用户未被封号"));
+        verify(userAuthService,times(1)).permitUserById(-1);
     }
 
     @Test

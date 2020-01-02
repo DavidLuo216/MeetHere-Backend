@@ -187,7 +187,7 @@ public class UserController {
     public JsonResult forbid_user(@RequestParam("user_id")Integer user_id) {
         boolean result = userAuthService.forbidUserById(user_id);
         if(result){
-            return new JsonResult("封号成功");
+            return new JsonResult(JsonResult.SUCCESS,"封号成功");
         }
         else{
             return new JsonResult(JsonResult.NOT_FOUND,"用户不存在");
@@ -200,7 +200,7 @@ public class UserController {
     public JsonResult permit_user(@RequestParam("user_id")Integer user_id) {
         boolean result = userAuthService.permitUserById(user_id);
         if(result){
-            return new JsonResult("解封成功");
+            return new JsonResult(JsonResult.SUCCESS,"解封成功");
         }
         else{
             return new JsonResult(JsonResult.FAIL,"用户未被封号");
