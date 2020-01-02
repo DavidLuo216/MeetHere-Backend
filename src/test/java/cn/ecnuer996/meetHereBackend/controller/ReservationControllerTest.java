@@ -244,6 +244,7 @@ class ReservationControllerTest {
         user.setId(1);
         ArrayList<Reservation> reservations = new ArrayList<>();
         Reservation reservation = new Reservation();
+        reservation.setId(1);
         reservation.setUserId(1);
         reservation.setSiteId(3);
         reservation.setUserId(1);
