@@ -37,4 +37,5 @@ public class UserService {
     public int update(User user){
         return userDao.updateByPrimaryKeySelective(user);
     }
+
 }

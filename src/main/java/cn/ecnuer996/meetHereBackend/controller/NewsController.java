@@ -26,6 +26,7 @@ import java.util.Map;
 @RestController
 @Api(tags = "新闻相关接口")
 public class NewsController {
+
     private NewsService newsService;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -122,4 +123,5 @@ public class NewsController {
             return new JsonResult(result);
         }
     }
+
 }

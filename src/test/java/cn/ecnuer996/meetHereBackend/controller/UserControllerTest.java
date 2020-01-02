@@ -4,7 +4,6 @@ import cn.ecnuer996.meetHereBackend.model.User;
 import cn.ecnuer996.meetHereBackend.model.UserAuth;
 import cn.ecnuer996.meetHereBackend.service.UserAuthService;
 import cn.ecnuer996.meetHereBackend.service.UserService;
-import cn.ecnuer996.meetHereBackend.util.UploadUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,13 +26,11 @@ class UserControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
     @MockBean
     private UserService userService;
     @MockBean
     private UserAuthService userAuthService;
-    @MockBean
-    private UploadUtil uploadUtil;
-
 
     private MockMvc mockMvc;
 
@@ -345,4 +342,5 @@ class UserControllerTest {
                         .jsonPath("$.result")
                         .isEmpty());
     }
+
 }

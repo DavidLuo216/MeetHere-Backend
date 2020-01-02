@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 @Repository
 public interface NewsMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(News record);
@@ -28,4 +29,5 @@ public interface NewsMapper {
     int updateByPrimaryKey(News record);
 	
 	ArrayList<News> selectAllNews();
+
 }

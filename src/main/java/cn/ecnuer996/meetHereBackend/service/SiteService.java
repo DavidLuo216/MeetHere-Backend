@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 @Service("SiteService")
 public class SiteService {
+
     @Autowired
     private SiteMapper siteDao;
 

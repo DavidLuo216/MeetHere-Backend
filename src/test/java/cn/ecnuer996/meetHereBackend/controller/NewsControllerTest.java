@@ -26,6 +26,7 @@ class NewsControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
     @MockBean
     private NewsService newsService;
 
@@ -151,4 +152,5 @@ class NewsControllerTest {
                         .jsonPath("$.message")
                         .value("请求失败"));
     }
+
 }

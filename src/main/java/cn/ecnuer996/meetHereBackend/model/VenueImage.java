@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.model;
 
 public class VenueImage {
+
     private Integer venueId;
 
     private String image;

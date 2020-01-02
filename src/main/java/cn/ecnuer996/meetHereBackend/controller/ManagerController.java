@@ -25,15 +25,10 @@ import java.util.*;
 public class ManagerController {
 
     private UserService userService;
-
     private SiteService siteService;
-
     private VenueService venueService;
-
     private ManagerService managerService;
-
     private UserAuthService userAuthService;
-
     private ReservationService reservationService;
 
     @Autowired

@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.model;
 
 public class Message {
+
     private Integer id;
 
     private Integer userId;
@@ -70,4 +71,5 @@ public class Message {
     public void setReply(String reply) {
         this.reply = reply == null ? null : reply.trim();
     }
+
 }

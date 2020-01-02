@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ReservationMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(Reservation record);

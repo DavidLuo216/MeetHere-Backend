@@ -6,7 +6,6 @@ import cn.ecnuer996.meetHereBackend.service.VenueService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,7 +17,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.text.ParseException;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -26,11 +24,11 @@ class SiteControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
     @MockBean
     private SiteService siteService;
     @MockBean
     private VenueService venueService;
-
 
     private MockMvc mockMvc;
 

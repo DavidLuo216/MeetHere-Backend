@@ -7,6 +7,7 @@ import java.util.List;
 
 @Repository
 public interface NewsImageMapper {
+
     int deleteByPrimaryKey(NewsImageKey key);
 
     int insert(NewsImageKey record);
@@ -26,4 +27,5 @@ public interface NewsImageMapper {
      * @return
      */
     String selectNewsCoverByNewsId(Integer newsId);
+
 }

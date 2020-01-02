@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.model;
 
 public class Manager {
+
     private Integer id;
 
     private String name;
@@ -40,4 +41,5 @@ public class Manager {
     public void setAvatar(String avatar) {
         this.avatar = avatar == null ? null : avatar.trim();
     }
+
 }

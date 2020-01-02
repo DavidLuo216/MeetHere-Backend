@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.model;
 
 public class Site {
+
     private Integer id;
 
     private String name;
@@ -60,4 +61,5 @@ public class Site {
     public void setPrice(Float price) {
         this.price = price;
     }
+
 }

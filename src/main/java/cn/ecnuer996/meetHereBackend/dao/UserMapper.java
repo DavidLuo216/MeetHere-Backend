@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 @Repository
 public interface UserMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(User record);
@@ -22,4 +23,5 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     ArrayList<User> selectAllUsers();
+
 }

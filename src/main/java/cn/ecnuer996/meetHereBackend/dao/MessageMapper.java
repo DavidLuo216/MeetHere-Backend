@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MessageMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(Message record);
@@ -16,4 +17,5 @@ public interface MessageMapper {
     int updateByPrimaryKeySelective(Message record);
 
     int updateByPrimaryKey(Message record);
+
 }

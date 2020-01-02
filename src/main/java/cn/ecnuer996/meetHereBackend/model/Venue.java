@@ -3,6 +3,7 @@ package cn.ecnuer996.meetHereBackend.model;
 import java.util.Date;
 
 public class Venue {
+
     private Integer id;
 
     private String name;
@@ -72,4 +73,5 @@ public class Venue {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
+
 }

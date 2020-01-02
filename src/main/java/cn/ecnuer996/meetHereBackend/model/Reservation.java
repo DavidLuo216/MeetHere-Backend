@@ -3,6 +3,7 @@ package cn.ecnuer996.meetHereBackend.model;
 import java.util.Date;
 
 public class Reservation {
+
     private Integer id;
 
     private Integer siteId;

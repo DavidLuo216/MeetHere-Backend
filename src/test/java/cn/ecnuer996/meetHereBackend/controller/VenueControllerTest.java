@@ -1,16 +1,13 @@
 package cn.ecnuer996.meetHereBackend.controller;
 
 import cn.ecnuer996.meetHereBackend.dao.SiteMapper;
-import cn.ecnuer996.meetHereBackend.model.News;
 import cn.ecnuer996.meetHereBackend.model.Site;
 import cn.ecnuer996.meetHereBackend.model.Venue;
-import cn.ecnuer996.meetHereBackend.service.SiteService;
 import cn.ecnuer996.meetHereBackend.service.VenueService;
 import cn.ecnuer996.meetHereBackend.transfer.VenueInList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,7 +15,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.result.ModelResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -26,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -35,11 +29,11 @@ class VenueControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
     @MockBean
     private SiteMapper siteDao;
     @MockBean
     private VenueService venueService;
-
 
     private MockMvc mockMvc;
 
@@ -228,4 +222,5 @@ class VenueControllerTest {
         verify(siteDao,times(1)).selectByPrimaryKey(1);
         verify(siteDao,times(1)).deleteByPrimaryKey(1);
     }
+
 }

@@ -44,17 +44,14 @@ public class VenueController {
     public void setVenueService(VenueService venueService) {
         this.venueService = venueService;
     }
-
     @Autowired
     public void setVenueService(VenueMapper venueDao) {
         this.venueDao = venueDao;
     }
-
     @Autowired
     public void setVenueImageDao(VenueImageMapper venueImageDao) {
         this.venueImageDao = venueImageDao;
     }
-
     @Autowired
     public void setSiteDao(SiteMapper siteDao) {
         this.siteDao = siteDao;
@@ -242,4 +239,5 @@ public class VenueController {
         siteDao.deleteByPrimaryKey(id);
         return new JsonResult();
     }
+
 }

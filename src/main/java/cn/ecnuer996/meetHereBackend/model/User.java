@@ -1,6 +1,7 @@
 package cn.ecnuer996.meetHereBackend.model;
 
 public class User {
+
     private Integer id;
 
     private String nickname;
@@ -61,4 +62,5 @@ public class User {
     public void setEmail(String email) {
         this.email = email == null ? null : email.trim();
     }
+
 }
