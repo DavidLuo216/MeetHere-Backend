@@ -41,6 +41,6 @@ class ReservationServiceTest {
     @Test
     void getGoingReservation() {
         reservationService.getGoingReservation();
-        verify(reservationDao.getGoingReservation());
+        verify(reservationDao,times(1)).getGoingReservation();
     }
 }

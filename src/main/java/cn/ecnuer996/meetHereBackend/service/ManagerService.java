@@ -32,9 +32,4 @@ public class ManagerService {
     public Manager getManagerByName(String name){
         return managerDao.selectByName(name);
     }
-
-    public ArrayList<Manager> getAllManagers() {
-        return managerDao.getAllManagers();
-    }
-
 }
