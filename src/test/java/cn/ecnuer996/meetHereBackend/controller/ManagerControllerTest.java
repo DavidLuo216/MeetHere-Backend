@@ -20,8 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +39,37 @@ class ManagerControllerTest {
     @BeforeEach
     public void init(){
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    @Test
+    @DisplayName("管理员非空详情")
+    void getManager() throws Exception {
+        Manager manager = new Manager();
+        when(managerService.getManager(anyInt())).thenReturn(manager);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/manager")
+                .param("managerId", "1"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("管理员空详情")
+    void getManagerEmpty() throws Exception {
+        when(managerService.getManager(anyInt())).thenReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/manager")
+                .param("managerId", "1"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("404"))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.result")
+                        .isEmpty());
     }
 
     @Test
