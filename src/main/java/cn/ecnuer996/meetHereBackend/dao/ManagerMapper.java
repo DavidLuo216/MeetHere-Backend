@@ -3,6 +3,8 @@ package cn.ecnuer996.meetHereBackend.dao;
 import cn.ecnuer996.meetHereBackend.model.Manager;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+
 @Repository
 public interface ManagerMapper {
     int deleteByPrimaryKey(Integer id);
@@ -23,4 +25,7 @@ public interface ManagerMapper {
     int updateByPrimaryKeySelective(Manager record);
 
     int updateByPrimaryKey(Manager record);
+
+    ArrayList<Manager> getAllManagers();
+
 }

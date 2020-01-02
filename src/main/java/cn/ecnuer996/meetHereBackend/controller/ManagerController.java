@@ -48,6 +48,39 @@ public class ManagerController {
         this.userAuthService = userAuthService;
     }
 
+    @ApiOperation("管理员详情")
+    @GetMapping("/manager")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "managerId",value = "管理员ID", required = true)
+    })
+    public JsonResult getManagerDetail(@RequestParam int managerId) {
+        Manager manager = managerService.getManager(managerId);
+        if(manager == null) {
+            return new JsonResult(JsonResult.NOT_FOUND, "管理员不存在");
+        }
+        else {
+            return new JsonResult(manager);
+        }
+    }
+
+    @ApiOperation("管理员一览")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
+                         @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)})
+    @GetMapping(value="/all-managers")
+    public JsonResult getAllNews(@RequestParam("segment")Integer segment,
+                                 @RequestParam("page")Integer page){
+        ArrayList<Manager> preManagers = managerService.getAllManagers();
+        int numOfPages = Math.max((int) Math.ceil(preManagers.size() / (double) segment), 1);
+        ArrayList<Manager> managers = new ArrayList<>();
+        for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, preManagers.size()); ++i){
+            managers.add(preManagers.get(i));
+        }
+        Map<String,Object> result=new HashMap<>(2);
+        result.put("numOfPages",numOfPages);
+        result.put("newsList",managers);
+        return new JsonResult(result);
+    }
+
     @ApiOperation("管理员登录接口")
     @PostMapping("/manager-sign-in")
     public JsonResult logIn(@RequestBody Manager managerParam){

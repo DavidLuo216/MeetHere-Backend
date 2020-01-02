@@ -85,4 +85,7 @@
       avatar = #{avatar,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="getAllManagers" resultMap="BaseResultMap">
+    select * from manager2
+  </select>
 </mapper>
