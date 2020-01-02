@@ -99,7 +99,7 @@ public class VenueController {
         return new JsonResult(result,"查询成功");
     }
 
-    @ApiOperation("指定场馆信息查询")
+    @ApiOperation("查询场馆详情")
     @ApiImplicitParams({ @ApiImplicitParam(name = "id", value = "场馆id", required = true) })
     @GetMapping(value="/venue-detail")
     public JsonResult getVenueDetail(@RequestParam("id")Integer venueId){
@@ -107,7 +107,7 @@ public class VenueController {
     }
 
     @ApiOperation("新增场馆")
-    @PostMapping("/add-venue")
+    @PostMapping(value = "/add-venue",consumes = "multipart/form-data")
     public JsonResult addVenue(@RequestParam String name,
                                @RequestParam String address,
                                @RequestParam String introduction,
@@ -151,12 +151,12 @@ public class VenueController {
     @ApiOperation("更新场馆的文本信息")
     @PostMapping("/update-venue")
     public JsonResult updateVenue(@RequestParam int id,
-                                  @RequestParam(required = false) String name,
-                                  @RequestParam(required = false) String address,
-                                  @RequestParam(required = false) String introduction,
-                                  @RequestParam(required = false) String phone,
-                                  @RequestParam(required = false) String beginTime,
-                                  @RequestParam(required = false) String endTime) throws ParseException {
+                                  @RequestParam String name,
+                                  @RequestParam String address,
+                                  @RequestParam String introduction,
+                                  @RequestParam String phone,
+                                  @RequestParam String beginTime,
+                                  @RequestParam String endTime) throws ParseException {
         Venue venue=new Venue();
         venue.setId(id);
         venue.setName(name);
@@ -177,11 +177,13 @@ public class VenueController {
                               @RequestParam MultipartFile image,
                               @RequestParam float price){
         String imageName=UUID.randomUUID().toString();
-        try{
-            image.transferTo(new File(FilePathUtil.LOCAL_SITE_IMAGE_PREFIX+imageName));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new JsonResult(JsonResult.FAIL,"保存图片失败");
+        if(image!=null){
+            try{
+                image.transferTo(new File(FilePathUtil.LOCAL_SITE_IMAGE_PREFIX+imageName));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new JsonResult(JsonResult.FAIL,"保存图片失败");
+            }
         }
         Site site=new Site();
         site.setIntruction(introduction);
@@ -222,7 +224,7 @@ public class VenueController {
         site.setIntruction(introduction);
         site.setName(name);
         site.setPrice(price);
-        siteDao.updateByPrimaryKey(site);
+        siteDao.updateByPrimaryKeySelective(site);
         return new JsonResult();
     }
 
