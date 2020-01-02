@@ -279,4 +279,22 @@ class ReservationControllerTest {
                         .jsonPath("$.result")
                         .isNotEmpty());
     }
+
+    @Test
+    @DisplayName("取消订单成功")
+    void cancelReservation() throws Exception {
+        String content="{\"userId\":\"10001\",\"reservationId\":\"1\"}";
+        when(reservationService.cancelReservation(anyInt(), anyInt())).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/cancel")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.code")
+                        .value("200"))
+                .andExpect(MockMvcResultMatchers
+                                .jsonPath("$.result")
+                                .isNotEmpty());
+    }
+
 }

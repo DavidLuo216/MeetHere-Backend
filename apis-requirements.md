@@ -56,6 +56,9 @@
 - 订单一览
   - 查询该用户的所有订单（分页）
   - 取消该用户未完成的某个订单
+    id:cancel
+    para:userId[用户编号],reservationId[订单编号]
+    pre:调用者必须保证用户和订单的匹配
 - 评论管理
   - 评论网站/场馆/新闻
     id:add-global-comment
