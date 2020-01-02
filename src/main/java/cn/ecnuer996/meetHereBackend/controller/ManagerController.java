@@ -1,13 +1,11 @@
 package cn.ecnuer996.meetHereBackend.controller;
 
-import cn.ecnuer996.meetHereBackend.model.Manager;
-import cn.ecnuer996.meetHereBackend.model.User;
-import cn.ecnuer996.meetHereBackend.model.UserAuth;
-import cn.ecnuer996.meetHereBackend.service.ManagerService;
-import cn.ecnuer996.meetHereBackend.service.UserAuthService;
-import cn.ecnuer996.meetHereBackend.service.UserService;
+import cn.ecnuer996.meetHereBackend.model.*;
+import cn.ecnuer996.meetHereBackend.service.*;
+import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
 import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import cn.ecnuer996.meetHereBackend.util.JsonResult;
+import cn.ecnuer996.meetHereBackend.util.ReservationState;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -15,9 +13,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author LuoChengLing
@@ -29,13 +26,29 @@ public class ManagerController {
 
     private UserService userService;
 
+    private SiteService siteService;
+
+    private VenueService venueService;
+
     private ManagerService managerService;
 
     private UserAuthService userAuthService;
 
+    private ReservationService reservationService;
+
     @Autowired
     public void setUserService(UserService userService){
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setUserService(SiteService siteService){
+        this.siteService = siteService;
+    }
+
+    @Autowired
+    public void setVenueService(VenueService venueService){
+        this.venueService = venueService;
     }
 
     @Autowired
@@ -47,6 +60,20 @@ public class ManagerController {
     public void setUserAuthService(UserAuthService userAuthService) {
         this.userAuthService = userAuthService;
     }
+
+    @Autowired
+    public void setReservationService(ReservationService reservationService){
+        this.reservationService = reservationService;
+    }
+
+    /* Change Date To String Begin */
+    private String DateToDate(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd").format(date);
+    }
+    private String DateToTime(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+    }
+    /* Change Date To String Finish */
 
     @ApiOperation("管理员详情")
     @GetMapping("/manager")
@@ -120,6 +147,43 @@ public class ManagerController {
             @RequestParam("username")String username) {
         userAuthService.refuseRediscover(username);
         return new JsonResult();
+    }
+
+    @ApiOperation("分页查询进行中订单列表接口")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "segment", value = "每页条数", required = true),
+                         @ApiImplicitParam(name = "page", value = "待查询的页号", required = true)})
+    @GetMapping(value="/going-orders")
+    public JsonResult searchOrders(@RequestParam("segment")Integer segment,
+                                   @RequestParam("page")Integer page) {
+        List<Reservation> pre_reservations = reservationService.getGoingReservation();
+        int num_of_pages = Math.max((int) Math.ceil(pre_reservations.size() / (double) segment), 1);
+        List<Reservation> reservations = new ArrayList<>();
+        for(int i = Math.max(page * segment,0); i < Math.min(page * segment + segment, pre_reservations.size()); ++i){
+            reservations.add(pre_reservations.get(i));
+        }
+        ArrayList<ReservationDetail> details = new ArrayList<>();
+        int len = reservations.size();
+        for(int i = 0; i < len; i++) {
+            Reservation reservation = reservations.get(i);
+            ReservationDetail item = new ReservationDetail();
+            Site site = siteService.getSiteById(reservation.getSiteId());
+            /* Calculate Element Value Begin */
+            item.setSiteName(site.getName());
+            item.setSiteImage(FilePathUtil.URL_SITE_IMAGE_PREFIX + site.getImage());
+            item.setVenueName(venueService.getVenueById(site.getVenueId()).getName());
+            item.setBookTime(DateToTime(reservation.getBookTime()));
+            item.setReserveDate(DateToDate(reservation.getDate()));
+            item.setCost(reservation.getCost());
+            item.setBeginTime(venueService.simplePrintPeriod(reservation.getBeginTime()));
+            item.setEndTime(venueService.simplePrintPeriod(reservation.getEndTime() + 1));
+            item.setState(ReservationState.states.get(reservation.getState()));
+            /* Calculate Element Value Finish */
+            details.add(item);
+        }
+        Map<String,Object> result=new HashMap<>(2);
+        result.put("details",details);
+        result.put("num_of_pages",num_of_pages);
+        return new JsonResult(result,"查询成功");
     }
 
 }

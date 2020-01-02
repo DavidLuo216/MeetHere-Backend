@@ -31,4 +31,6 @@ public interface ReservationMapper {
 
     boolean cancelReservation(int hash);
 
+    ArrayList<Reservation> getGoingReservation();
+
 }
