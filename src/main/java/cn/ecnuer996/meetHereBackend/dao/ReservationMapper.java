@@ -29,4 +29,6 @@ public interface ReservationMapper {
 
     ArrayList<Integer> getSiteIdsOfReservations();
 
+    boolean cancelReservation(int hash);
+
 }

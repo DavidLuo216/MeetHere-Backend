@@ -75,7 +75,7 @@ public class ManagerController {
         else if(!manager.getPassword().equals(password)){
             return new JsonResult(JsonResult.FAIL,"密码错误");
         }
-        else{
+        else {
             Map<String,Object> result=new HashMap<>(3);
             result.put("name",manager.getName());
             result.put("avatar", FilePathUtil.URL_MANAGER_AVATAR_PREFIX+manager.getAvatar());

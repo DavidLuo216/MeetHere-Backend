@@ -208,4 +208,23 @@ public class ReservationController {
         }
     }
 
+    @ApiOperation("取消订单")
+    @PostMapping(value="/cancel")
+    public JsonResult cancelReservation(@RequestBody JSONObject postBody){
+        int userId=postBody.getInteger("userId");
+        int reservationId=postBody.getInteger("reservationId");
+        reservationService.cancelReservation(userId, reservationId);
+        return new JsonResult("取消成功");
+    }
+
+    @ApiOperation("新闻")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "userId", value = "每页条数", required = true),
+            @ApiImplicitParam(name = "reservationId", value = "待查询的页号", required = true)})
+    @GetMapping(value="/cancels")
+    public JsonResult getAllNews(@RequestParam("userId")Integer userId,
+                                 @RequestParam("reservationId")Integer reservationId){
+        reservationService.cancelReservation(userId, reservationId);
+        return new JsonResult("成功");
+    }
+
 }

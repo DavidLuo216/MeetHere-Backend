@@ -171,4 +171,9 @@
       comment = #{comment,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="cancelReservation" parameterType="java.lang.Integer">
+    update reservation
+    set state = 3
+    where state = 1 and id * 100000 + user_id = #{hash,jdbcType=INTEGER}
+  </update>
 </mapper>
