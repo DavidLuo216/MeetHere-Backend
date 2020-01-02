@@ -38,6 +38,14 @@ public class UserController {
         this.userAuthService = userAuthService;
     }
 
+    @ApiOperation("根据id查用户信息")
+    @GetMapping("/get-user-by-id")
+    public JsonResult getUserById(@RequestParam int id){
+        User user=userService.getUserById(id);
+        user.setAvatar(FilePathUtil.URL_USER_AVATAR_PREFIX+user.getAvatar());
+        return new JsonResult(user);
+    }
+
     @ApiOperation("用户登录接口")
     @PostMapping(value="/sign-in")
     public JsonResult signIn(@RequestBody UserAuth userAuthParam){
