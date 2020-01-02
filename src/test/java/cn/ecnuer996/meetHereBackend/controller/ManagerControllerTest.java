@@ -1,9 +1,7 @@
 package cn.ecnuer996.meetHereBackend.controller;
 
-import cn.ecnuer996.meetHereBackend.model.Manager;
-import cn.ecnuer996.meetHereBackend.model.UserAuth;
-import cn.ecnuer996.meetHereBackend.service.ManagerService;
-import cn.ecnuer996.meetHereBackend.service.UserAuthService;
+import cn.ecnuer996.meetHereBackend.model.*;
+import cn.ecnuer996.meetHereBackend.service.*;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,10 +17,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class ManagerControllerTest {
@@ -33,6 +32,12 @@ class ManagerControllerTest {
     private ManagerService managerService;
     @MockBean
     private UserAuthService userAuthService;
+    @MockBean
+    private VenueService venueService;
+    @MockBean
+    private ReservationService reservationService;
+    @MockBean
+    private SiteService siteService;
 
     private MockMvc mockMvc;
 
@@ -200,5 +205,45 @@ class ManagerControllerTest {
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.result")
                         .isEmpty());
+    }
+
+    @Test
+    @DisplayName("成功查询进行中活动")
+    void searchOrders() throws Exception {
+        ArrayList<Reservation> reservations=new ArrayList<>();
+        for (int i=0;i<10;++i){
+            Reservation reservation=new Reservation();
+            reservation.setId(i);
+            reservation.setSiteId(i);
+            reservation.setBookTime(new Date());
+            reservation.setDate(new Date());
+            reservation.setCost(100f);
+            reservation.setBeginTime(i);
+            reservation.setEndTime(i+2);
+            reservations.add(reservation);
+        }
+        Site site=new Site();
+        site.setName("something");
+        site.setVenueId(1);
+        Venue venue=new Venue();
+        venue.setName("something");
+        when(siteService.getSiteById(anyInt())).thenReturn(site);
+        when(reservationService.getGoingReservation()).thenReturn(reservations);
+        when(venueService.getVenueById(anyInt())).thenReturn(venue);
+        mockMvc.perform(MockMvcRequestBuilders
+        .get("/going-orders")
+                .param("segment","5")
+                .param("page","0"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.code")
+                .value("200"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.result.num_of_pages")
+                .value("2"))
+                .andExpect(MockMvcResultMatchers
+                .jsonPath("$.result.details")
+                .isNotEmpty());
+        verify(venueService,times(5)).getVenueById(anyInt());
+        verify(venueService,times(5*2)).simplePrintPeriod(anyInt());
     }
 }
