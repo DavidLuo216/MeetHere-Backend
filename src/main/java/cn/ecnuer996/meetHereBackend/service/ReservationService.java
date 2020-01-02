@@ -27,4 +27,8 @@ public class ReservationService {
         return true;
     }
 
+    public ArrayList<Reservation> getGoingReservation() {
+        return reservationDao.getGoingReservation();
+    }
+
 }
