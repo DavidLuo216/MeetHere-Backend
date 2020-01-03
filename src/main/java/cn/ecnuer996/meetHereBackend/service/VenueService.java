@@ -93,8 +93,6 @@ public class VenueService {
         }
         Map<String,Object> venueDetail=new HashMap<>(9);
         SimpleDateFormat formatter=new SimpleDateFormat("HH:mm");
-        //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0"));
         venueDetail.put("id",venue.getId());
         venueDetail.put("name",venue.getName());
         venueDetail.put("address",venue.getAddress());
