@@ -1,6 +1,5 @@
 package cn.ecnuer996.meetHereBackend.service;
 
-import cn.ecnuer996.meetHereBackend.dao.ManagerMapper;
 import cn.ecnuer996.meetHereBackend.dao.NewsImageMapper;
 import cn.ecnuer996.meetHereBackend.dao.NewsMapper;
 import cn.ecnuer996.meetHereBackend.model.News;
@@ -9,7 +8,6 @@ import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +16,6 @@ public class NewsService {
 
     private NewsMapper newsDao;
     private NewsImageMapper newsImageDao;
-    private ManagerMapper managerDao;
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public void setNewsDao(NewsMapper newsDao) {
@@ -29,11 +25,6 @@ public class NewsService {
     @Autowired
     public void setNewsImageDao(NewsImageMapper newsImageDao) {
         this.newsImageDao = newsImageDao;
-    }
-
-    @Autowired
-    public void setManagerDao(ManagerMapper managerDao) {
-        this.managerDao = managerDao;
     }
 
     public void addNews(News news) {
