@@ -1,0 +1,272 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ManagerController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cn.ecnuer996.meetHereBackend.controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ManagerController (cn.ecnuer996.meetHereBackend.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ManagerController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (15/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (70/ 70)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cn.ecnuer996.meetHereBackend.controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.*;
+<i>4</i>&nbsp;import cn.ecnuer996.meetHereBackend.service.*;
+<i>5</i>&nbsp;import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
+<i>6</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
+<i>7</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.JsonResult;
+<i>8</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.ReservationState;
+<i>9</i>&nbsp;import io.swagger.annotations.Api;
+<i>10</i>&nbsp;import io.swagger.annotations.ApiImplicitParam;
+<i>11</i>&nbsp;import io.swagger.annotations.ApiImplicitParams;
+<i>12</i>&nbsp;import io.swagger.annotations.ApiOperation;
+<i>13</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>14</i>&nbsp;import org.springframework.web.bind.annotation.*;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;import java.text.SimpleDateFormat;
+<i>17</i>&nbsp;import java.util.*;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;/**
+<i>20</i>&nbsp; * @author LuoChengLing
+<i>21</i>&nbsp; */
+<i>22</i>&nbsp;@CrossOrigin
+<i>23</i>&nbsp;@RestController
+<i>24</i>&nbsp;@Api(tags = &quot;管理员相关接口&quot;)
+<b class="fc"><i>25</i>&nbsp;public class ManagerController {</b>
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    private UserService userService;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    private SiteService siteService;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    private VenueService venueService;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    private ManagerService managerService;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    private UserAuthService userAuthService;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    private ReservationService reservationService;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    @Autowired
+<i>40</i>&nbsp;    public void setUserService(UserService userService) {
+<b class="fc"><i>41</i>&nbsp;        this.userService = userService;</b>
+<b class="fc"><i>42</i>&nbsp;    }</b>
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    @Autowired
+<i>45</i>&nbsp;    public void setUserService(SiteService siteService) {
+<b class="fc"><i>46</i>&nbsp;        this.siteService = siteService;</b>
+<b class="fc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    @Autowired
+<i>50</i>&nbsp;    public void setVenueService(VenueService venueService) {
+<b class="fc"><i>51</i>&nbsp;        this.venueService = venueService;</b>
+<b class="fc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    @Autowired
+<i>55</i>&nbsp;    public void setManagerService(ManagerService managerService) {
+<b class="fc"><i>56</i>&nbsp;        this.managerService = managerService;</b>
+<b class="fc"><i>57</i>&nbsp;    }</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    @Autowired
+<i>60</i>&nbsp;    public void setUserAuthService(UserAuthService userAuthService) {
+<b class="fc"><i>61</i>&nbsp;        this.userAuthService = userAuthService;</b>
+<b class="fc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    @Autowired
+<i>65</i>&nbsp;    public void setReservationService(ReservationService reservationService) {
+<b class="fc"><i>66</i>&nbsp;        this.reservationService = reservationService;</b>
+<b class="fc"><i>67</i>&nbsp;    }</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    private String DateToDate(Date date) {
+<b class="fc"><i>70</i>&nbsp;        return new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).format(date);</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    private String DateToTime(Date date) {
+<b class="fc"><i>74</i>&nbsp;        return new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;).format(date);</b>
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    @ApiOperation(&quot;管理员详情&quot;)
+<i>78</i>&nbsp;    @ApiImplicitParams({
+<i>79</i>&nbsp;            @ApiImplicitParam(name = &quot;managerId&quot;, value = &quot;管理员ID&quot;, required = true)
+<i>80</i>&nbsp;    })
+<i>81</i>&nbsp;    @GetMapping(&quot;/manager&quot;)
+<i>82</i>&nbsp;    public JsonResult getManagerDetail(@RequestParam int managerId) {
+<b class="fc"><i>83</i>&nbsp;        Manager manager = managerService.getManager(managerId);</b>
+<b class="fc"><i>84</i>&nbsp;        if (manager == null) {</b>
+<b class="fc"><i>85</i>&nbsp;            return new JsonResult(JsonResult.NOT_FOUND, &quot;管理员不存在&quot;);</b>
+<i>86</i>&nbsp;        } else {
+<b class="fc"><i>87</i>&nbsp;            Map&lt;String, Object&gt; result = new HashMap&lt;&gt;(1);</b>
+<b class="fc"><i>88</i>&nbsp;            result.put(&quot;manager&quot;, manager);</b>
+<b class="fc"><i>89</i>&nbsp;            return new JsonResult(result);</b>
+<i>90</i>&nbsp;        }
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    @ApiOperation(&quot;管理员登录接口&quot;)
+<i>94</i>&nbsp;    @PostMapping(&quot;/manager-sign-in&quot;)
+<i>95</i>&nbsp;    public JsonResult logIn(@RequestBody Manager managerParam) {
+<b class="fc"><i>96</i>&nbsp;        String name = managerParam.getName();</b>
+<b class="fc"><i>97</i>&nbsp;        String password = managerParam.getPassword();</b>
+<b class="fc"><i>98</i>&nbsp;        Manager manager = managerService.getManagerByName(name);</b>
+<b class="fc"><i>99</i>&nbsp;        if (manager == null) {</b>
+<b class="fc"><i>100</i>&nbsp;            return new JsonResult(JsonResult.NOT_FOUND, &quot;不存在的管理员&quot;);</b>
+<b class="fc"><i>101</i>&nbsp;        } else if (!manager.getPassword().equals(password)) {</b>
+<b class="fc"><i>102</i>&nbsp;            return new JsonResult(JsonResult.FAIL, &quot;密码错误&quot;);</b>
+<i>103</i>&nbsp;        } else {
+<b class="fc"><i>104</i>&nbsp;            Map&lt;String, Object&gt; result = new HashMap&lt;&gt;(3);</b>
+<b class="fc"><i>105</i>&nbsp;            result.put(&quot;name&quot;, manager.getName());</b>
+<b class="fc"><i>106</i>&nbsp;            result.put(&quot;avatar&quot;, FilePathUtil.URL_MANAGER_AVATAR_PREFIX + manager.getAvatar());</b>
+<b class="fc"><i>107</i>&nbsp;            result.put(&quot;id&quot;, manager.getId());</b>
+<b class="fc"><i>108</i>&nbsp;            return new JsonResult(result, &quot;登录成功&quot;);</b>
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    @ApiOperation(&quot;获取申请找回密码的用户接口&quot;)
+<i>113</i>&nbsp;    @GetMapping(&quot;/get-forget-users&quot;)
+<i>114</i>&nbsp;    public JsonResult getForgetUsers() {
+<b class="fc"><i>115</i>&nbsp;        ArrayList&lt;UserAuth&gt; userAuths = userAuthService.getForgetUserAuths();</b>
+<b class="fc"><i>116</i>&nbsp;        ArrayList&lt;User&gt; users = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>117</i>&nbsp;        for (UserAuth userAuth : userAuths) {</b>
+<b class="fc"><i>118</i>&nbsp;            users.add(userService.getUserByName(userAuth.getIdentifier()));</b>
+<b class="fc"><i>119</i>&nbsp;        }</b>
+<b class="fc"><i>120</i>&nbsp;        if (users.size() == 0) {</b>
+<b class="fc"><i>121</i>&nbsp;            return new JsonResult(JsonResult.NOT_FOUND, &quot;列表为空&quot;);</b>
+<i>122</i>&nbsp;        } else {
+<b class="fc"><i>123</i>&nbsp;            return new JsonResult(users);</b>
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    @ApiOperation(&quot;同意找回密码接口&quot;)
+<i>128</i>&nbsp;    @ApiImplicitParams({
+<i>129</i>&nbsp;            @ApiImplicitParam(name = &quot;username&quot;, value = &quot;用户名&quot;, required = true)
+<i>130</i>&nbsp;    })
+<i>131</i>&nbsp;    @GetMapping(&quot;/accept-rediscover&quot;)
+<i>132</i>&nbsp;    public JsonResult acceptRediscover(
+<i>133</i>&nbsp;            @RequestParam(&quot;username&quot;) String username) {
+<b class="fc"><i>134</i>&nbsp;        userAuthService.acceptRediscover(username);</b>
+<b class="fc"><i>135</i>&nbsp;        return new JsonResult();</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    @ApiOperation(&quot;拒绝找回密码接口&quot;)
+<i>139</i>&nbsp;    @ApiImplicitParams({
+<i>140</i>&nbsp;            @ApiImplicitParam(name = &quot;username&quot;, value = &quot;用户名&quot;, required = true)
+<i>141</i>&nbsp;    })
+<i>142</i>&nbsp;    @GetMapping(&quot;/refuse-rediscover&quot;)
+<i>143</i>&nbsp;    public JsonResult refuseRediscover(
+<i>144</i>&nbsp;            @RequestParam(&quot;username&quot;) String username) {
+<b class="fc"><i>145</i>&nbsp;        userAuthService.refuseRediscover(username);</b>
+<b class="fc"><i>146</i>&nbsp;        return new JsonResult();</b>
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    @ApiOperation(&quot;分页查询进行中订单列表接口&quot;)
+<i>150</i>&nbsp;    @ApiImplicitParams({
+<i>151</i>&nbsp;            @ApiImplicitParam(name = &quot;segment&quot;, value = &quot;每页条数&quot;, required = true),
+<i>152</i>&nbsp;            @ApiImplicitParam(name = &quot;page&quot;, value = &quot;待查询的页号&quot;, required = true)
+<i>153</i>&nbsp;    })
+<i>154</i>&nbsp;    @GetMapping(value = &quot;/going-orders&quot;)
+<i>155</i>&nbsp;    public JsonResult searchOrders(@RequestParam(&quot;segment&quot;) Integer segment,
+<i>156</i>&nbsp;                                   @RequestParam(&quot;page&quot;) Integer page) {
+<b class="fc"><i>157</i>&nbsp;        List&lt;Reservation&gt; pre_reservations = reservationService.getGoingReservation();</b>
+<b class="fc"><i>158</i>&nbsp;        int num_of_pages = Math.max((int) Math.ceil(pre_reservations.size() / (double) segment), 1);</b>
+<b class="fc"><i>159</i>&nbsp;        List&lt;Reservation&gt; reservations = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>160</i>&nbsp;        for (int i = Math.max(page * segment, 0); i &lt; Math.min(page * segment + segment, pre_reservations.size()); ++i) {</b>
+<b class="fc"><i>161</i>&nbsp;            reservations.add(pre_reservations.get(i));</b>
+<i>162</i>&nbsp;        }
+<b class="fc"><i>163</i>&nbsp;        ArrayList&lt;ReservationDetail&gt; details = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>164</i>&nbsp;        int len = reservations.size();</b>
+<b class="fc"><i>165</i>&nbsp;        for (int i = 0; i &lt; len; i++) {</b>
+<b class="fc"><i>166</i>&nbsp;            Reservation reservation = reservations.get(i);</b>
+<b class="fc"><i>167</i>&nbsp;            ReservationDetail item = new ReservationDetail();</b>
+<b class="fc"><i>168</i>&nbsp;            Site site = siteService.getSiteById(reservation.getSiteId());</b>
+<i>169</i>&nbsp;            /* Calculate Element Value Begin */
+<b class="fc"><i>170</i>&nbsp;            item.setSiteName(site.getName());</b>
+<b class="fc"><i>171</i>&nbsp;            item.setSiteImage(FilePathUtil.URL_SITE_IMAGE_PREFIX + site.getImage());</b>
+<b class="fc"><i>172</i>&nbsp;            item.setVenueName(venueService.getVenueById(site.getVenueId()).getName());</b>
+<b class="fc"><i>173</i>&nbsp;            item.setBookTime(DateToTime(reservation.getBookTime()));</b>
+<b class="fc"><i>174</i>&nbsp;            item.setReserveDate(DateToDate(reservation.getDate()));</b>
+<b class="fc"><i>175</i>&nbsp;            item.setCost(reservation.getCost());</b>
+<b class="fc"><i>176</i>&nbsp;            item.setBeginTime(venueService.simplePrintPeriod(reservation.getBeginTime()));</b>
+<b class="fc"><i>177</i>&nbsp;            item.setEndTime(venueService.simplePrintPeriod(reservation.getEndTime() + 1));</b>
+<b class="fc"><i>178</i>&nbsp;            item.setState(ReservationState.states.get(reservation.getState()));</b>
+<i>179</i>&nbsp;            /* Calculate Element Value Finish */
+<b class="fc"><i>180</i>&nbsp;            details.add(item);</b>
+<i>181</i>&nbsp;        }
+<b class="fc"><i>182</i>&nbsp;        Map&lt;String, Object&gt; result = new HashMap&lt;&gt;(2);</b>
+<b class="fc"><i>183</i>&nbsp;        result.put(&quot;details&quot;, details);</b>
+<b class="fc"><i>184</i>&nbsp;        result.put(&quot;num_of_pages&quot;, num_of_pages);</b>
+<b class="fc"><i>185</i>&nbsp;        return new JsonResult(result, &quot;查询成功&quot;);</b>
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;}
+<i>189</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-01-02 20:19</div>
+</div>
+</body>
+</html>

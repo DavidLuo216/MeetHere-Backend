@@ -1,0 +1,149 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UserAuthService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cn.ecnuer996.meetHereBackend.service</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UserAuthService (cn.ecnuer996.meetHereBackend.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserAuthService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (22/ 22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cn.ecnuer996.meetHereBackend.service;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cn.ecnuer996.meetHereBackend.dao.UserAuthMapper;
+<i>4</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.UserAuth;
+<i>5</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>6</i>&nbsp;import org.springframework.stereotype.Service;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.util.ArrayList;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;@Service(&quot;UserAuthService&quot;)
+<b class="fc"><i>11</i>&nbsp;public class UserAuthService {</b>
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    @Autowired
+<i>14</i>&nbsp;    private UserAuthMapper userAuthDao;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    public int insert(UserAuth userAuth) {
+<b class="fc"><i>17</i>&nbsp;        return userAuthDao.insertSelective(userAuth);</b>
+<i>18</i>&nbsp;    }
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    public UserAuth getBySignInMethod(String method, String identifier) {
+<b class="fc"><i>21</i>&nbsp;        return userAuthDao.selectBySignInMethod(method, identifier);</b>
+<i>22</i>&nbsp;    }
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    public boolean forbidUserById(int user_id) {
+<b class="fc"><i>25</i>&nbsp;        UserAuth userAuth = userAuthDao.getLegalUserAuthById(user_id);</b>
+<b class="fc"><i>26</i>&nbsp;        if (userAuth == null) {</b>
+<b class="fc"><i>27</i>&nbsp;            return false;</b>
+<i>28</i>&nbsp;        }
+<b class="fc"><i>29</i>&nbsp;        userAuthDao.forbidUserById(userAuth.getUserId());</b>
+<b class="fc"><i>30</i>&nbsp;        return true;</b>
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public boolean permitUserById(int user_id) {
+<b class="fc"><i>34</i>&nbsp;        UserAuth userAuth = userAuthDao.getIllegalUserAuthById(user_id);</b>
+<b class="fc"><i>35</i>&nbsp;        if (userAuth == null) {</b>
+<b class="fc"><i>36</i>&nbsp;            return false;</b>
+<i>37</i>&nbsp;        }
+<b class="fc"><i>38</i>&nbsp;        userAuthDao.permitUserById(userAuth.getUserId());</b>
+<b class="fc"><i>39</i>&nbsp;        return true;</b>
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    public String getIdentityType(int user_id) {
+<b class="fc"><i>43</i>&nbsp;        UserAuth userAuth = userAuthDao.getUserAuthById(user_id);</b>
+<b class="fc"><i>44</i>&nbsp;        return userAuth.getIdentityType();</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public boolean isForgetBefore(String username) {
+<b class="fc"><i>48</i>&nbsp;        UserAuth userAuth = userAuthDao.isForgetBefore(username);</b>
+<b class="fc"><i>49</i>&nbsp;        return userAuth != null;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public ArrayList&lt;UserAuth&gt; getForgetUserAuths() {
+<b class="fc"><i>53</i>&nbsp;        return userAuthDao.getForgetUserAuths();</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public boolean acceptRediscover(String username) {
+<b class="fc"><i>57</i>&nbsp;        userAuthDao.acceptRediscover(username);</b>
+<b class="fc"><i>58</i>&nbsp;        return true;</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public boolean refuseRediscover(String username) {
+<b class="fc"><i>62</i>&nbsp;        userAuthDao.refuseRediscover(username);</b>
+<b class="fc"><i>63</i>&nbsp;        return true;</b>
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-01-03 15:50</div>
+</div>
+</body>
+</html>

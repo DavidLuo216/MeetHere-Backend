@@ -1,0 +1,303 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ReservationController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cn.ecnuer996.meetHereBackend.controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ReservationController (cn.ecnuer996.meetHereBackend.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReservationController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (114/ 114)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cn.ecnuer996.meetHereBackend.controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.Reservation;
+<i>4</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.Site;
+<i>5</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.User;
+<i>6</i>&nbsp;import cn.ecnuer996.meetHereBackend.service.ReservationService;
+<i>7</i>&nbsp;import cn.ecnuer996.meetHereBackend.service.SiteService;
+<i>8</i>&nbsp;import cn.ecnuer996.meetHereBackend.service.UserService;
+<i>9</i>&nbsp;import cn.ecnuer996.meetHereBackend.service.VenueService;
+<i>10</i>&nbsp;import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
+<i>11</i>&nbsp;import cn.ecnuer996.meetHereBackend.transfer.TopNVenues;
+<i>12</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
+<i>13</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.JsonResult;
+<i>14</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.ReservationState;
+<i>15</i>&nbsp;import com.alibaba.fastjson.JSONObject;
+<i>16</i>&nbsp;import io.swagger.annotations.Api;
+<i>17</i>&nbsp;import io.swagger.annotations.ApiImplicitParam;
+<i>18</i>&nbsp;import io.swagger.annotations.ApiImplicitParams;
+<i>19</i>&nbsp;import io.swagger.annotations.ApiOperation;
+<i>20</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>21</i>&nbsp;import org.springframework.web.bind.annotation.*;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;import java.text.ParseException;
+<i>24</i>&nbsp;import java.text.SimpleDateFormat;
+<i>25</i>&nbsp;import java.util.*;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;@CrossOrigin
+<i>28</i>&nbsp;@RestController
+<i>29</i>&nbsp;@Api(tags = &quot;预定相关接口&quot;)
+<b class="fc"><i>30</i>&nbsp;public class ReservationController {</b>
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    private UserService userService;
+<i>33</i>&nbsp;    private SiteService siteService;
+<i>34</i>&nbsp;    private VenueService venueService;
+<i>35</i>&nbsp;    private ReservationService reservationService;
+<i>36</i>&nbsp;    @Autowired
+<i>37</i>&nbsp;    public void setUserService(UserService userService) {
+<b class="fc"><i>38</i>&nbsp;        this.userService = userService;</b>
+<b class="fc"><i>39</i>&nbsp;    }</b>
+<i>40</i>&nbsp;    @Autowired
+<i>41</i>&nbsp;    public void setSiteService(SiteService siteService) {
+<b class="fc"><i>42</i>&nbsp;        this.siteService = siteService;</b>
+<b class="fc"><i>43</i>&nbsp;    }</b>
+<i>44</i>&nbsp;    @Autowired
+<i>45</i>&nbsp;    public void setVenueService(VenueService venueService) {
+<b class="fc"><i>46</i>&nbsp;        this.venueService = venueService;</b>
+<b class="fc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;    @Autowired
+<i>49</i>&nbsp;    public void setReservationService(ReservationService reservationService) {
+<b class="fc"><i>50</i>&nbsp;        this.reservationService = reservationService;</b>
+<b class="fc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    /* Change Date To String Begin */
+<i>54</i>&nbsp;    private String DateToDate(Date date) {
+<b class="fc"><i>55</i>&nbsp;        return new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).format(date);</b>
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;    private String DateToTime(Date date) {
+<b class="fc"><i>58</i>&nbsp;        return new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;).format(date);</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;    /* Change Date To String Finish */
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    @ApiOperation(&quot;通过venue_id查询某个场馆的所有场地接口&quot;)
+<i>63</i>&nbsp;    @ApiImplicitParams({ @ApiImplicitParam(name = &quot;venue_id&quot;, value = &quot;场馆id&quot;, required = true) })
+<i>64</i>&nbsp;    @GetMapping(value=&quot;/site&quot;)
+<i>65</i>&nbsp;    public JsonResult getSites(@RequestParam(&quot;venue_id&quot;)Integer venueId){
+<b class="fc"><i>66</i>&nbsp;        ArrayList&lt;Site&gt; sites=venueService.getSiteByVenueId(venueId);</b>
+<b class="fc"><i>67</i>&nbsp;        String prefix=FilePathUtil.URL_SITE_IMAGE_PREFIX;</b>
+<b class="fc"><i>68</i>&nbsp;        for (Site s:sites){</b>
+<b class="fc"><i>69</i>&nbsp;            s.setImage(prefix+s.getImage());</b>
+<b class="fc"><i>70</i>&nbsp;        }</b>
+<b class="fc"><i>71</i>&nbsp;        Map&lt;String,Object&gt; result=new HashMap&lt;&gt;(1);</b>
+<b class="fc"><i>72</i>&nbsp;        result.put(&quot;sites&quot;,sites);</b>
+<b class="fc"><i>73</i>&nbsp;        return new JsonResult(result);</b>
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    @ApiOperation(&quot;最受欢迎的n个场馆信息&quot;)
+<i>77</i>&nbsp;    @ApiImplicitParams({ @ApiImplicitParam(name = &quot;n&quot;, value = &quot;数目&quot;, required = true)})
+<i>78</i>&nbsp;    @GetMapping(value=&quot;/topNVenues&quot;)
+<i>79</i>&nbsp;    public JsonResult getTopNVenues(@RequestParam(&quot;n&quot;)Integer n){
+<b class="fc"><i>80</i>&nbsp;        ArrayList&lt;Integer&gt; siteIds = reservationService.getSiteIdsOfReservations();</b>
+<b class="fc"><i>81</i>&nbsp;        ArrayList&lt;Integer&gt; venueSiteIds = siteService.getVenueSiteIds();</b>
+<b class="fc"><i>82</i>&nbsp;        Map site2venue = new HashMap();</b>
+<b class="fc"><i>83</i>&nbsp;        for(Integer venueSiteId : venueSiteIds){</b>
+<b class="fc"><i>84</i>&nbsp;            site2venue.put(venueSiteId % 10000,venueSiteId / 10000);</b>
+<b class="fc"><i>85</i>&nbsp;        }</b>
+<b class="fc"><i>86</i>&nbsp;        Map venue2times = new HashMap&lt;Integer, Integer&gt;();</b>
+<b class="fc"><i>87</i>&nbsp;        for(Integer siteId : siteIds) {</b>
+<b class="fc"><i>88</i>&nbsp;            int venueId = (Integer)site2venue.get(siteId);</b>
+<b class="fc"><i>89</i>&nbsp;            if(venue2times.containsKey(venueId)) {</b>
+<b class="fc"><i>90</i>&nbsp;                venue2times.put(venueId, (Integer)venue2times.get(venueId) + 1);</b>
+<i>91</i>&nbsp;            }
+<i>92</i>&nbsp;            else{
+<b class="fc"><i>93</i>&nbsp;                venue2times.put(venueId,1);</b>
+<i>94</i>&nbsp;            }
+<b class="fc"><i>95</i>&nbsp;        }</b>
+<b class="fc"><i>96</i>&nbsp;        ArrayList&lt;Integer&gt; venueWithTimes = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>97</i>&nbsp;        for(Object entry : venue2times.entrySet()) {</b>
+<b class="fc"><i>98</i>&nbsp;            venueWithTimes.add((Integer) ((Map.Entry) entry).getKey() + (Integer) ((Map.Entry) entry).getValue() * 10000);</b>
+<b class="fc"><i>99</i>&nbsp;        }</b>
+<b class="fc"><i>100</i>&nbsp;        venueWithTimes.sort(Comparator.reverseOrder());</b>
+<i>101</i>&nbsp;
+<b class="fc"><i>102</i>&nbsp;        n = Math.min(n,venueWithTimes.size());</b>
+<i>103</i>&nbsp;
+<b class="fc"><i>104</i>&nbsp;        ArrayList&lt;TopNVenues&gt; venues = new ArrayList&lt;&gt;();</b>
+<i>105</i>&nbsp;
+<b class="fc"><i>106</i>&nbsp;        for(int i = 0; i &lt; n; ++i){</b>
+<b class="fc"><i>107</i>&nbsp;            TopNVenues topNVenues = new TopNVenues();</b>
+<b class="fc"><i>108</i>&nbsp;            topNVenues.rank = i + 1;</b>
+<b class="fc"><i>109</i>&nbsp;            topNVenues.venueId = venueWithTimes.get(i) % 10000;</b>
+<b class="fc"><i>110</i>&nbsp;            topNVenues.times = venueWithTimes.get(i) / 10000;</b>
+<b class="fc"><i>111</i>&nbsp;            venues.add(topNVenues);</b>
+<i>112</i>&nbsp;        }
+<i>113</i>&nbsp;
+<b class="fc"><i>114</i>&nbsp;        Map&lt;String,Object&gt; result=new HashMap&lt;&gt;(1);</b>
+<b class="fc"><i>115</i>&nbsp;        result.put(&quot;venues&quot;,venues);</b>
+<b class="fc"><i>116</i>&nbsp;        return new JsonResult(result);</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    @ApiOperation(&quot;提交预定信息接口&quot;)
+<i>120</i>&nbsp;    @PostMapping(value=&quot;/reserve&quot;)
+<i>121</i>&nbsp;    public JsonResult generateReservation(@RequestBody JSONObject postBody){
+<b class="fc"><i>122</i>&nbsp;        int siteId=postBody.getInteger(&quot;siteId&quot;);</b>
+<b class="fc"><i>123</i>&nbsp;        int userId=postBody.getInteger(&quot;userId&quot;);</b>
+<b class="fc"><i>124</i>&nbsp;        String date=postBody.getString(&quot;bookDate&quot;);</b>
+<b class="fc"><i>125</i>&nbsp;        int beginPeriod=postBody.getInteger(&quot;beginPeriod&quot;);</b>
+<b class="fc"><i>126</i>&nbsp;        int endPeriod=postBody.getInteger(&quot;endPeriod&quot;);</b>
+<i>127</i>&nbsp;        // 验证想预约的时段是否已被预约
+<b class="fc"><i>128</i>&nbsp;        ReservationDetail reservationDetail=null;</b>
+<i>129</i>&nbsp;        try{
+<b class="fc"><i>130</i>&nbsp;            SimpleDateFormat formatter=new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</b>
+<i>131</i>&nbsp;            //mysql时区问题尚未解决，只能将日期按照GMT+0时区解析
+<b class="fc"><i>132</i>&nbsp;            formatter.setTimeZone(TimeZone.getTimeZone(&quot;GMT+0&quot;));</b>
+<b class="fc"><i>133</i>&nbsp;            Date realDate=formatter.parse(date);</b>
+<b class="fc"><i>134</i>&nbsp;            int[] bookList=venueService.getReservationsBySiteIdAndDate(siteId,realDate);</b>
+<b class="fc"><i>135</i>&nbsp;            for(int i=beginPeriod;i&lt;endPeriod;++i){</b>
+<i>136</i>&nbsp;                //时段不可预约
+<b class="fc"><i>137</i>&nbsp;                if(bookList[i]!=0){</b>
+<b class="fc"><i>138</i>&nbsp;                    if(bookList[i]==1){</b>
+<b class="fc"><i>139</i>&nbsp;                        return new JsonResult(JsonResult.FAIL,&quot;您所选的时段已被预约，请重新选择预约时间！&quot;);</b>
+<i>140</i>&nbsp;                    }else{
+<b class="fc"><i>141</i>&nbsp;                        return new JsonResult(JsonResult.FAIL,&quot;您所选的时段处于闭馆时间，请重新选择预约时间！&quot;);</b>
+<i>142</i>&nbsp;                    }
+<i>143</i>&nbsp;                }
+<i>144</i>&nbsp;            }
+<b class="fc"><i>145</i>&nbsp;            Date bookTime=new Date();</b>
+<b class="fc"><i>146</i>&nbsp;            Reservation reservation=new Reservation();</b>
+<b class="fc"><i>147</i>&nbsp;            reservation.setSiteId(siteId);</b>
+<b class="fc"><i>148</i>&nbsp;            reservation.setUserId(userId);</b>
+<b class="fc"><i>149</i>&nbsp;            reservation.setBookTime(bookTime);</b>
+<b class="fc"><i>150</i>&nbsp;            reservation.setDate(realDate);</b>
+<b class="fc"><i>151</i>&nbsp;            reservation.setCost(venueService.calculatePrice(siteId,endPeriod-beginPeriod));</b>
+<b class="fc"><i>152</i>&nbsp;            reservation.setBeginTime(beginPeriod);</b>
+<b class="fc"><i>153</i>&nbsp;            reservation.setEndTime(endPeriod);</b>
+<b class="fc"><i>154</i>&nbsp;            reservation.setState(1);</b>
+<b class="fc"><i>155</i>&nbsp;            venueService.addReservation(reservation);</b>
+<b class="fc"><i>156</i>&nbsp;            reservationDetail=venueService.getLatestReservation(userId);</b>
+<b class="fc"><i>157</i>&nbsp;        }catch(ParseException pe){</b>
+<b class="fc"><i>158</i>&nbsp;            pe.printStackTrace();</b>
+<b class="fc"><i>159</i>&nbsp;            return new JsonResult(JsonResult.FAIL,&quot;时间格式错误&quot;);</b>
+<b class="fc"><i>160</i>&nbsp;        }</b>
+<b class="fc"><i>161</i>&nbsp;        Map&lt;String,Object&gt; result=new HashMap&lt;&gt;(1);</b>
+<b class="fc"><i>162</i>&nbsp;        result.put(&quot;detail&quot;,reservationDetail);</b>
+<b class="fc"><i>163</i>&nbsp;        return new JsonResult(result,&quot;预定成功&quot;);</b>
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    @ApiOperation(&quot;分页查询用户订单列表接口&quot;)
+<i>167</i>&nbsp;    @ApiImplicitParams({ @ApiImplicitParam(name = &quot;id&quot;, value = &quot;用户id&quot;, required = true),
+<i>168</i>&nbsp;                         @ApiImplicitParam(name = &quot;segment&quot;, value = &quot;每页条数&quot;, required = true),
+<i>169</i>&nbsp;                         @ApiImplicitParam(name = &quot;page&quot;, value = &quot;待查询的页号&quot;, required = true)})
+<i>170</i>&nbsp;    @GetMapping(value=&quot;/orders&quot;)
+<i>171</i>&nbsp;    public JsonResult searchOrders(@RequestParam(&quot;id&quot;)Integer userId,
+<i>172</i>&nbsp;                                   @RequestParam(&quot;segment&quot;)Integer segment,
+<i>173</i>&nbsp;                                   @RequestParam(&quot;page&quot;)Integer page) {
+<b class="fc"><i>174</i>&nbsp;        User user = userService.getUserById(userId);</b>
+<b class="fc"><i>175</i>&nbsp;        if(user.getId() &lt; 0){</b>
+<b class="fc"><i>176</i>&nbsp;            return new JsonResult(JsonResult.FAIL,&quot;无效的用户ID&quot;);</b>
+<i>177</i>&nbsp;        }
+<i>178</i>&nbsp;        else{
+<b class="fc"><i>179</i>&nbsp;            List&lt;Reservation&gt; pre_reservations = reservationService.getReservationByUserId(userId);</b>
+<b class="fc"><i>180</i>&nbsp;            int num_of_pages = Math.max((int) Math.ceil(pre_reservations.size() / (double) segment), 1);</b>
+<b class="fc"><i>181</i>&nbsp;            List&lt;Reservation&gt; reservations = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>182</i>&nbsp;            for(int i = Math.max(page * segment,0); i &lt; Math.min(page * segment + segment, pre_reservations.size()); ++i){</b>
+<b class="fc"><i>183</i>&nbsp;                reservations.add(pre_reservations.get(i));</b>
+<i>184</i>&nbsp;            }
+<b class="fc"><i>185</i>&nbsp;            ArrayList&lt;ReservationDetail&gt; details = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>186</i>&nbsp;            int len = reservations.size();</b>
+<b class="fc"><i>187</i>&nbsp;            for(int i = 0; i &lt; len; i++) {</b>
+<b class="fc"><i>188</i>&nbsp;                Reservation reservation = reservations.get(i);</b>
+<b class="fc"><i>189</i>&nbsp;                ReservationDetail item = new ReservationDetail();</b>
+<b class="fc"><i>190</i>&nbsp;                Site site = siteService.getSiteById(reservation.getSiteId());</b>
+<i>191</i>&nbsp;                /* Calculate Element Value Begin */
+<b class="fc"><i>192</i>&nbsp;                item.setSiteName(site.getName());</b>
+<b class="fc"><i>193</i>&nbsp;                item.setSiteImage(FilePathUtil.URL_SITE_IMAGE_PREFIX + site.getImage());</b>
+<b class="fc"><i>194</i>&nbsp;                item.setVenueName(venueService.getVenueById(site.getVenueId()).getName());</b>
+<b class="fc"><i>195</i>&nbsp;                item.setBookTime(DateToTime(reservation.getBookTime()));</b>
+<b class="fc"><i>196</i>&nbsp;                item.setReserveDate(DateToDate(reservation.getDate()));</b>
+<b class="fc"><i>197</i>&nbsp;                item.setCost(reservation.getCost());</b>
+<b class="fc"><i>198</i>&nbsp;                item.setBeginTime(venueService.simplePrintPeriod(reservation.getBeginTime()));</b>
+<b class="fc"><i>199</i>&nbsp;                item.setEndTime(venueService.simplePrintPeriod(reservation.getEndTime() + 1));</b>
+<b class="fc"><i>200</i>&nbsp;                item.setState(ReservationState.states.get(reservation.getState()));</b>
+<i>201</i>&nbsp;                /* Calculate Element Value Finish */
+<b class="fc"><i>202</i>&nbsp;                details.add(item);</b>
+<i>203</i>&nbsp;            }
+<b class="fc"><i>204</i>&nbsp;            Map&lt;String,Object&gt; result=new HashMap&lt;&gt;(2);</b>
+<b class="fc"><i>205</i>&nbsp;            result.put(&quot;details&quot;,details);</b>
+<b class="fc"><i>206</i>&nbsp;            result.put(&quot;num_of_pages&quot;,num_of_pages);</b>
+<b class="fc"><i>207</i>&nbsp;            return new JsonResult(result,&quot;查询成功&quot;);</b>
+<i>208</i>&nbsp;        }
+<i>209</i>&nbsp;    }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    @ApiOperation(&quot;取消订单&quot;)
+<i>212</i>&nbsp;    @PostMapping(value=&quot;/cancel&quot;)
+<i>213</i>&nbsp;    public JsonResult cancelReservation(@RequestBody JSONObject postBody){
+<b class="fc"><i>214</i>&nbsp;        int userId=postBody.getInteger(&quot;userId&quot;);</b>
+<b class="fc"><i>215</i>&nbsp;        int reservationId=postBody.getInteger(&quot;reservationId&quot;);</b>
+<b class="fc"><i>216</i>&nbsp;        reservationService.cancelReservation(userId, reservationId);</b>
+<b class="fc"><i>217</i>&nbsp;        return new JsonResult(&quot;取消成功&quot;);</b>
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-01-02 20:19</div>
+</div>
+</body>
+</html>

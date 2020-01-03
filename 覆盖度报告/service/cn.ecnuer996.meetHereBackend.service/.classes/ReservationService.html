@@ -1,0 +1,117 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ReservationService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cn.ecnuer996.meetHereBackend.service</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ReservationService (cn.ecnuer996.meetHereBackend.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReservationService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cn.ecnuer996.meetHereBackend.service;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cn.ecnuer996.meetHereBackend.dao.ReservationMapper;
+<i>4</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.Reservation;
+<i>5</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>6</i>&nbsp;import org.springframework.stereotype.Service;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.util.ArrayList;
+<i>9</i>&nbsp;import java.util.List;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;@Service(&quot;ReservationService&quot;)
+<b class="fc"><i>12</i>&nbsp;public class ReservationService {</b>
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;    @Autowired
+<i>15</i>&nbsp;    private ReservationMapper reservationDao;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    public List&lt;Reservation&gt; getReservationByUserId(int id) {
+<b class="fc"><i>18</i>&nbsp;        return reservationDao.selectByUserId(id);</b>
+<i>19</i>&nbsp;    }
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    public ArrayList&lt;Integer&gt; getSiteIdsOfReservations() {
+<b class="fc"><i>22</i>&nbsp;        return reservationDao.getSiteIdsOfReservations();</b>
+<i>23</i>&nbsp;    }
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public boolean cancelReservation(Integer userId, Integer reservationId) {
+<b class="fc"><i>26</i>&nbsp;        reservationDao.cancelReservation(userId + reservationId * 100000);</b>
+<b class="fc"><i>27</i>&nbsp;        return true;</b>
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public ArrayList&lt;Reservation&gt; getGoingReservation() {
+<b class="fc"><i>31</i>&nbsp;        return reservationDao.getGoingReservation();</b>
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-01-03 15:50</div>
+</div>
+</body>
+</html>

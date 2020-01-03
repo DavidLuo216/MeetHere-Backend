@@ -1,0 +1,319 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: VenueService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cn.ecnuer996.meetHereBackend.service</a> ]
+</div>
+
+<h1>Coverage Summary for Class: VenueService (cn.ecnuer996.meetHereBackend.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VenueService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (16/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (121/ 121)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cn.ecnuer996.meetHereBackend.service;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.Reservation;
+<i>4</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.Venue;
+<i>5</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.Site;
+<i>6</i>&nbsp;import cn.ecnuer996.meetHereBackend.dao.ReservationMapper;
+<i>7</i>&nbsp;import cn.ecnuer996.meetHereBackend.dao.SiteMapper;
+<i>8</i>&nbsp;import cn.ecnuer996.meetHereBackend.dao.VenueImageMapper;
+<i>9</i>&nbsp;import cn.ecnuer996.meetHereBackend.dao.VenueMapper;
+<i>10</i>&nbsp;import cn.ecnuer996.meetHereBackend.transfer.ReservationDetail;
+<i>11</i>&nbsp;import cn.ecnuer996.meetHereBackend.transfer.VenueInList;
+<i>12</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
+<i>13</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.ReservationState;
+<i>14</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>15</i>&nbsp;import org.springframework.stereotype.Service;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;import java.text.ParseException;
+<i>18</i>&nbsp;import java.text.SimpleDateFormat;
+<i>19</i>&nbsp;import java.util.*;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;@Service(&quot;VenueService&quot;)
+<b class="fc"><i>22</i>&nbsp;public class VenueService {</b>
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    private VenueMapper venueDao;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    private SiteMapper siteDao;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    private VenueImageMapper venueImageDao;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    private ReservationMapper reservationDao;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    @Autowired
+<i>33</i>&nbsp;    public void setVenueDao(VenueMapper venueDao) {
+<b class="fc"><i>34</i>&nbsp;        this.venueDao = venueDao;</b>
+<b class="fc"><i>35</i>&nbsp;    }</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    @Autowired
+<i>38</i>&nbsp;    public void setSiteDao(SiteMapper siteDao) {
+<b class="fc"><i>39</i>&nbsp;        this.siteDao = siteDao;</b>
+<b class="fc"><i>40</i>&nbsp;    }</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    @Autowired
+<i>43</i>&nbsp;    public void setVenueImageDao(VenueImageMapper venueImageDao) {
+<b class="fc"><i>44</i>&nbsp;        this.venueImageDao = venueImageDao;</b>
+<b class="fc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    @Autowired
+<i>48</i>&nbsp;    public void setReservationDao(ReservationMapper reservationDao) {
+<b class="fc"><i>49</i>&nbsp;        this.reservationDao = reservationDao;</b>
+<b class="fc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * 预定的最小时间单元，单位为分钟
+<i>54</i>&nbsp;     */
+<i>55</i>&nbsp;    final static int ReservationPeriod = 30;
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public Venue getVenueById(int id) {
+<b class="fc"><i>58</i>&nbsp;        return venueDao.selectByPrimaryKey(id);</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public ArrayList&lt;Venue&gt; getVenueByName(String name) {
+<b class="fc"><i>62</i>&nbsp;        return venueDao.selectByVenueName(name);</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public ArrayList&lt;Site&gt; getSiteByVenueId(int venue_id) {
+<b class="fc"><i>66</i>&nbsp;        ArrayList&lt;Site&gt; sites = siteDao.selectByVenueId(venue_id);</b>
+<b class="fc"><i>67</i>&nbsp;        for (Site site : sites) {</b>
+<b class="fc"><i>68</i>&nbsp;            site.setImage(FilePathUtil.URL_SITE_IMAGE_PREFIX + site.getImage());</b>
+<b class="fc"><i>69</i>&nbsp;        }</b>
+<b class="fc"><i>70</i>&nbsp;        return sites;</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public ArrayList&lt;VenueInList&gt; getAllVenues() {
+<b class="fc"><i>74</i>&nbsp;        List&lt;Venue&gt; rawVenues = venueDao.selectAllVenues();</b>
+<b class="fc"><i>75</i>&nbsp;        List&lt;VenueInList&gt; listVenues = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>76</i>&nbsp;        SimpleDateFormat formatter = new SimpleDateFormat(&quot;HH:mm&quot;);</b>
+<b class="fc"><i>77</i>&nbsp;        formatter.setTimeZone(TimeZone.getTimeZone(&quot;GMT+0&quot;));</b>
+<b class="fc"><i>78</i>&nbsp;        for (Venue venue : rawVenues) {</b>
+<b class="fc"><i>79</i>&nbsp;            VenueInList venueItem = new VenueInList();</b>
+<b class="fc"><i>80</i>&nbsp;            venueItem.id = venue.getId();</b>
+<b class="fc"><i>81</i>&nbsp;            venueItem.name = venue.getName();</b>
+<b class="fc"><i>82</i>&nbsp;            venueItem.address = venue.getAddress();</b>
+<b class="fc"><i>83</i>&nbsp;            venueItem.beginTime = venue.getBeginTime();</b>
+<b class="fc"><i>84</i>&nbsp;            venueItem.endTime = venue.getEndTime();</b>
+<b class="fc"><i>85</i>&nbsp;            venueItem.cover = FilePathUtil.URL_VENUE_COVER_PREFIX + venueImageDao.getVenueCoverByVenueId(venue.getId());</b>
+<b class="fc"><i>86</i>&nbsp;            listVenues.add(venueItem);</b>
+<b class="fc"><i>87</i>&nbsp;        }</b>
+<b class="fc"><i>88</i>&nbsp;        return (ArrayList&lt;VenueInList&gt;) listVenues;</b>
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public Map&lt;String, Object&gt; getVenueDetail(int venue_id) {
+<b class="fc"><i>92</i>&nbsp;        Venue venue = venueDao.selectByPrimaryKey(venue_id);</b>
+<b class="fc"><i>93</i>&nbsp;        List&lt;String&gt; images = venueImageDao.getVenueImagesByVenueId(venue_id);</b>
+<b class="fc"><i>94</i>&nbsp;        for (int i = 0; i &lt; images.size(); ++i) {</b>
+<b class="fc"><i>95</i>&nbsp;            images.set(i, FilePathUtil.URL_VENUE_COVER_PREFIX + images.get(i));</b>
+<i>96</i>&nbsp;        }
+<b class="fc"><i>97</i>&nbsp;        Map&lt;String, Object&gt; venueDetail = new HashMap&lt;&gt;(9);</b>
+<b class="fc"><i>98</i>&nbsp;        SimpleDateFormat formatter = new SimpleDateFormat(&quot;HH:mm&quot;);</b>
+<b class="fc"><i>99</i>&nbsp;        venueDetail.put(&quot;id&quot;, venue.getId());</b>
+<b class="fc"><i>100</i>&nbsp;        venueDetail.put(&quot;name&quot;, venue.getName());</b>
+<b class="fc"><i>101</i>&nbsp;        venueDetail.put(&quot;address&quot;, venue.getAddress());</b>
+<b class="fc"><i>102</i>&nbsp;        venueDetail.put(&quot;introduction&quot;, venue.getIntroduction());</b>
+<b class="fc"><i>103</i>&nbsp;        venueDetail.put(&quot;phone&quot;, venue.getPhone());</b>
+<b class="fc"><i>104</i>&nbsp;        venueDetail.put(&quot;beginTime&quot;, formatter.format(venue.getBeginTime()));</b>
+<b class="fc"><i>105</i>&nbsp;        venueDetail.put(&quot;endTime&quot;, formatter.format(venue.getEndTime()));</b>
+<b class="fc"><i>106</i>&nbsp;        venueDetail.put(&quot;images&quot;, images);</b>
+<b class="fc"><i>107</i>&nbsp;        ArrayList sites = getSiteByVenueId(venue_id);</b>
+<b class="fc"><i>108</i>&nbsp;        venueDetail.put(&quot;sites&quot;, sites);</b>
+<b class="fc"><i>109</i>&nbsp;        return venueDetail;</b>
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public Map&lt;String, Object&gt; getSiteTimes(int siteId, String date) throws ParseException {
+<b class="fc"><i>113</i>&nbsp;        SimpleDateFormat formatter = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</b>
+<b class="fc"><i>114</i>&nbsp;        Date realDate = formatter.parse(date);</b>
+<b class="fc"><i>115</i>&nbsp;        List&lt;Reservation&gt; reservations = reservationDao.selectBySiteIdAndDate(siteId, realDate);</b>
+<i>116</i>&nbsp;
+<b class="fc"><i>117</i>&nbsp;        Site site = siteDao.selectByPrimaryKey(siteId);</b>
+<b class="fc"><i>118</i>&nbsp;        Venue venue = venueDao.selectByPrimaryKey(site.getVenueId());</b>
+<i>119</i>&nbsp;
+<b class="fc"><i>120</i>&nbsp;        int beginMinutes = (int) ((((venue.getBeginTime().getTime()) / 60000) % 1440));</b>
+<b class="fc"><i>121</i>&nbsp;        int endMinutes = (int) ((((venue.getEndTime().getTime()) / 60000) % 1440));</b>
+<b class="fc"><i>122</i>&nbsp;        int beginId = beginMinutes / ReservationPeriod;</b>
+<b class="fc"><i>123</i>&nbsp;        int endId = endMinutes / ReservationPeriod;</b>
+<i>124</i>&nbsp;
+<b class="fc"><i>125</i>&nbsp;        int[] bookableList = new int[48];</b>
+<b class="fc"><i>126</i>&nbsp;        Arrays.fill(bookableList, -1);</b>
+<b class="fc"><i>127</i>&nbsp;        for (int i = beginId; i &lt; endId; ++i) {</b>
+<b class="fc"><i>128</i>&nbsp;            bookableList[i] = 0;</b>
+<i>129</i>&nbsp;        }
+<b class="fc"><i>130</i>&nbsp;        for (Reservation r : reservations) {</b>
+<b class="fc"><i>131</i>&nbsp;            for (int i = r.getBeginTime(); i &lt;= r.getEndTime(); ++i) {</b>
+<i>132</i>&nbsp;                // 标记此时段已被预约
+<b class="fc"><i>133</i>&nbsp;                bookableList[i] = 1;</b>
+<i>134</i>&nbsp;            }
+<b class="fc"><i>135</i>&nbsp;        }</b>
+<b class="fc"><i>136</i>&nbsp;        Map&lt;String, Object&gt; ret = new HashMap&lt;&gt;(2);</b>
+<b class="fc"><i>137</i>&nbsp;        List&lt;Map&lt;String, Object&gt;&gt; siteTimes = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>138</i>&nbsp;        for (int i = 0; i &lt; bookableList.length; ++i) {</b>
+<b class="fc"><i>139</i>&nbsp;            Map&lt;String, Object&gt; siteTime = new HashMap&lt;&gt;(3);</b>
+<b class="fc"><i>140</i>&nbsp;            siteTime.put(&quot;period&quot;, simplePrintPeriod(i));</b>
+<b class="fc"><i>141</i>&nbsp;            siteTime.put(&quot;bookable&quot;, bookableList[i]);</b>
+<b class="fc"><i>142</i>&nbsp;            siteTime.put(&quot;periodId&quot;, i);</b>
+<b class="fc"><i>143</i>&nbsp;            siteTimes.add(siteTime);</b>
+<i>144</i>&nbsp;        }
+<b class="fc"><i>145</i>&nbsp;        ret.put(&quot;siteTimes&quot;, siteTimes);</b>
+<b class="fc"><i>146</i>&nbsp;        ret.put(&quot;bookDate&quot;, date);</b>
+<b class="fc"><i>147</i>&nbsp;        return ret;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /**
+<i>151</i>&nbsp;     * 根据要预定的场地ID和日期返回一个布尔值列表表示各时段是否可预约
+<i>152</i>&nbsp;     *
+<i>153</i>&nbsp;     * @param siteId
+<i>154</i>&nbsp;     * @param date
+<i>155</i>&nbsp;     * @return
+<i>156</i>&nbsp;     */
+<i>157</i>&nbsp;    public int[] getReservationsBySiteIdAndDate(int siteId, Date date) {
+<b class="fc"><i>158</i>&nbsp;        List&lt;Reservation&gt; reservations = reservationDao.selectBySiteIdAndDate(siteId, date);</b>
+<b class="fc"><i>159</i>&nbsp;        Site site = siteDao.selectByPrimaryKey(siteId);</b>
+<b class="fc"><i>160</i>&nbsp;        Venue venue = venueDao.selectByPrimaryKey(site.getVenueId());</b>
+<i>161</i>&nbsp;
+<b class="fc"><i>162</i>&nbsp;        int beginMinutes = (int) ((((venue.getBeginTime().getTime()) / 60000) % 1440));</b>
+<b class="fc"><i>163</i>&nbsp;        int endMinutes = (int) ((((venue.getEndTime().getTime()) / 60000) % 1440));</b>
+<b class="fc"><i>164</i>&nbsp;        int beginId = beginMinutes / ReservationPeriod;</b>
+<b class="fc"><i>165</i>&nbsp;        int endId = endMinutes / ReservationPeriod;</b>
+<i>166</i>&nbsp;
+<b class="fc"><i>167</i>&nbsp;        int[] bookableList = new int[48];</b>
+<b class="fc"><i>168</i>&nbsp;        for (int i = 0; i &lt; bookableList.length; ++i) {</b>
+<b class="fc"><i>169</i>&nbsp;            bookableList[i] = -1;</b>
+<i>170</i>&nbsp;        }
+<b class="fc"><i>171</i>&nbsp;        for (int i = beginId; i &lt; endId; ++i) {</b>
+<b class="fc"><i>172</i>&nbsp;            bookableList[i] = 0;</b>
+<i>173</i>&nbsp;        }
+<b class="fc"><i>174</i>&nbsp;        for (Reservation r : reservations) {</b>
+<b class="fc"><i>175</i>&nbsp;            for (int i = r.getBeginTime(); i &lt; r.getEndTime(); ++i) {</b>
+<i>176</i>&nbsp;                // 标记此时段已被预约
+<b class="fc"><i>177</i>&nbsp;                bookableList[i] = 1;</b>
+<i>178</i>&nbsp;            }
+<b class="fc"><i>179</i>&nbsp;        }</b>
+<b class="fc"><i>180</i>&nbsp;        return bookableList;</b>
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    public Float calculatePrice(int siteId, int periodNum) {
+<b class="fc"><i>184</i>&nbsp;        return siteDao.selectByPrimaryKey(siteId).getPrice() * periodNum / 2;</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    public int addReservation(Reservation reservation) {
+<b class="fc"><i>188</i>&nbsp;        return reservationDao.insertSelective(reservation);</b>
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    public ReservationDetail getLatestReservation(int userId) {
+<b class="fc"><i>192</i>&nbsp;        ReservationDetail reservationDetail = new ReservationDetail();</b>
+<b class="fc"><i>193</i>&nbsp;        Reservation latestReservation = reservationDao.selectLatestReservationByUserId(userId);</b>
+<b class="fc"><i>194</i>&nbsp;        SimpleDateFormat dateTimeFormatter = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</b>
+<i>195</i>&nbsp;        //mysql时区问题尚未解决，只能将日期按照GMT+8时区解析
+<b class="fc"><i>196</i>&nbsp;        dateTimeFormatter.setTimeZone(TimeZone.getTimeZone(&quot;GMT+8&quot;));</b>
+<b class="fc"><i>197</i>&nbsp;        SimpleDateFormat dateFormatter = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</b>
+<b class="fc"><i>198</i>&nbsp;        dateFormatter.setTimeZone(TimeZone.getTimeZone(&quot;GMT+0&quot;));</b>
+<i>199</i>&nbsp;
+<b class="fc"><i>200</i>&nbsp;        Site site = siteDao.selectByPrimaryKey(latestReservation.getSiteId());</b>
+<b class="fc"><i>201</i>&nbsp;        Venue venue = venueDao.selectByPrimaryKey(site.getVenueId());</b>
+<i>202</i>&nbsp;
+<b class="fc"><i>203</i>&nbsp;        reservationDetail.setId(latestReservation.getId());</b>
+<b class="fc"><i>204</i>&nbsp;        reservationDetail.setVenueName(venue.getName());</b>
+<b class="fc"><i>205</i>&nbsp;        reservationDetail.setSiteName(site.getName());</b>
+<b class="fc"><i>206</i>&nbsp;        reservationDetail.setSiteImage(FilePathUtil.URL_SITE_IMAGE_PREFIX + site.getImage());</b>
+<b class="fc"><i>207</i>&nbsp;        reservationDetail.setBookTime(dateTimeFormatter.format(latestReservation.getBookTime()));</b>
+<b class="fc"><i>208</i>&nbsp;        reservationDetail.setCost(latestReservation.getCost());</b>
+<b class="fc"><i>209</i>&nbsp;        reservationDetail.setReserveDate(dateFormatter.format(latestReservation.getDate()));</b>
+<b class="fc"><i>210</i>&nbsp;        reservationDetail.setState(ReservationState.states.get(latestReservation.getState()));</b>
+<i>211</i>&nbsp;
+<b class="fc"><i>212</i>&nbsp;        reservationDetail.setBeginTime(simplePrintPeriod(latestReservation.getBeginTime()));</b>
+<b class="fc"><i>213</i>&nbsp;        reservationDetail.setEndTime(simplePrintPeriod(latestReservation.getEndTime() + 1));</b>
+<i>214</i>&nbsp;
+<b class="fc"><i>215</i>&nbsp;        return reservationDetail;</b>
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    public String simplePrintPeriod(int periodId) {
+<b class="fc"><i>219</i>&nbsp;        if (periodId % 2 == 0) {</b>
+<b class="fc"><i>220</i>&nbsp;            if (periodId / 2 &lt; 10) {</b>
+<b class="fc"><i>221</i>&nbsp;                return &quot;0&quot; + (periodId / 2) + &quot;:00&quot;;</b>
+<i>222</i>&nbsp;            } else {
+<b class="fc"><i>223</i>&nbsp;                return (periodId / 2) + &quot;:00&quot;;</b>
+<i>224</i>&nbsp;            }
+<i>225</i>&nbsp;        } else {
+<b class="fc"><i>226</i>&nbsp;            if (periodId / 2 &lt; 10) {</b>
+<b class="fc"><i>227</i>&nbsp;                return &quot;0&quot; + (periodId / 2) + &quot;:30&quot;;</b>
+<i>228</i>&nbsp;            } else {
+<b class="fc"><i>229</i>&nbsp;                return (periodId / 2) + &quot;:30&quot;;</b>
+<i>230</i>&nbsp;            }
+<i>231</i>&nbsp;        }
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;}
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-01-03 15:50</div>
+</div>
+</body>
+</html>

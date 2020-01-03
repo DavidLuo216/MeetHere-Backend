@@ -1,0 +1,328 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: VenueController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cn.ecnuer996.meetHereBackend.controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: VenueController (cn.ecnuer996.meetHereBackend.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VenueController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (12/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    65.5%
+  </span>
+  <span class="absValue">
+    (72/ 110)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cn.ecnuer996.meetHereBackend.controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cn.ecnuer996.meetHereBackend.dao.SiteMapper;
+<i>4</i>&nbsp;import cn.ecnuer996.meetHereBackend.dao.VenueImageMapper;
+<i>5</i>&nbsp;import cn.ecnuer996.meetHereBackend.dao.VenueMapper;
+<i>6</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.Site;
+<i>7</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.Venue;
+<i>8</i>&nbsp;import cn.ecnuer996.meetHereBackend.model.VenueImage;
+<i>9</i>&nbsp;import cn.ecnuer996.meetHereBackend.service.VenueService;
+<i>10</i>&nbsp;import cn.ecnuer996.meetHereBackend.transfer.VenueInList;
+<i>11</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.FilePathUtil;
+<i>12</i>&nbsp;import cn.ecnuer996.meetHereBackend.util.JsonResult;
+<i>13</i>&nbsp;import io.swagger.annotations.Api;
+<i>14</i>&nbsp;import io.swagger.annotations.ApiImplicitParam;
+<i>15</i>&nbsp;import io.swagger.annotations.ApiImplicitParams;
+<i>16</i>&nbsp;import io.swagger.annotations.ApiOperation;
+<i>17</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>18</i>&nbsp;import org.springframework.web.bind.annotation.*;
+<i>19</i>&nbsp;import org.springframework.web.multipart.MultipartFile;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;import java.io.File;
+<i>22</i>&nbsp;import java.io.IOException;
+<i>23</i>&nbsp;import java.text.ParseException;
+<i>24</i>&nbsp;import java.text.SimpleDateFormat;
+<i>25</i>&nbsp;import java.util.ArrayList;
+<i>26</i>&nbsp;import java.util.HashMap;
+<i>27</i>&nbsp;import java.util.Map;
+<i>28</i>&nbsp;import java.util.UUID;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * @author LuoChengLing
+<i>32</i>&nbsp; */
+<i>33</i>&nbsp;@CrossOrigin
+<i>34</i>&nbsp;@RestController
+<i>35</i>&nbsp;@Api(tags = &quot;场馆相关接口&quot;)
+<b class="fc"><i>36</i>&nbsp;public class VenueController {</b>
+<i>37</i>&nbsp;    private VenueMapper venueDao;
+<i>38</i>&nbsp;    private VenueService venueService;
+<i>39</i>&nbsp;    private VenueImageMapper venueImageDao;
+<i>40</i>&nbsp;    private SiteMapper siteDao;
+<b class="fc"><i>41</i>&nbsp;    private SimpleDateFormat timeFormat=new SimpleDateFormat(&quot;HH:mm&quot;);</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    @Autowired
+<i>44</i>&nbsp;    public void setVenueService(VenueService venueService) {
+<b class="fc"><i>45</i>&nbsp;        this.venueService = venueService;</b>
+<b class="fc"><i>46</i>&nbsp;    }</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    @Autowired
+<i>49</i>&nbsp;    public void setVenueService(VenueMapper venueDao) {
+<b class="fc"><i>50</i>&nbsp;        this.venueDao = venueDao;</b>
+<b class="fc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    @Autowired
+<i>54</i>&nbsp;    public void setVenueImageDao(VenueImageMapper venueImageDao) {
+<b class="fc"><i>55</i>&nbsp;        this.venueImageDao = venueImageDao;</b>
+<b class="fc"><i>56</i>&nbsp;    }</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    @Autowired
+<i>59</i>&nbsp;    public void setSiteDao(SiteMapper siteDao) {
+<b class="fc"><i>60</i>&nbsp;        this.siteDao = siteDao;</b>
+<b class="fc"><i>61</i>&nbsp;    }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    @ApiOperation(&quot;场馆一览&quot;)
+<i>64</i>&nbsp;    @ApiImplicitParams({ @ApiImplicitParam(name = &quot;segment&quot;, value = &quot;每页条数&quot;, required = true),
+<i>65</i>&nbsp;                         @ApiImplicitParam(name = &quot;page&quot;, value = &quot;待查询页号&quot;, required = true)})
+<i>66</i>&nbsp;    @GetMapping(value=&quot;/venues&quot;)
+<i>67</i>&nbsp;    public JsonResult getAllVenues(@RequestParam(&quot;segment&quot;)Integer segment,
+<i>68</i>&nbsp;                                   @RequestParam(&quot;page&quot;)Integer page){
+<b class="fc"><i>69</i>&nbsp;        ArrayList&lt;VenueInList&gt; pre_venues = venueService.getAllVenues();</b>
+<b class="fc"><i>70</i>&nbsp;        int num_of_pages = Math.max((int) Math.ceil(pre_venues.size() / (double) segment), 1);</b>
+<b class="fc"><i>71</i>&nbsp;        ArrayList&lt;VenueInList&gt; venues = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>72</i>&nbsp;        for(int i = Math.max(page * segment,0); i &lt; Math.min(page * segment + segment, pre_venues.size()); ++i){</b>
+<b class="fc"><i>73</i>&nbsp;            venues.add(pre_venues.get(i));</b>
+<i>74</i>&nbsp;        }
+<b class="fc"><i>75</i>&nbsp;        Map&lt;String,Object&gt; result=new HashMap&lt;&gt;(segment);</b>
+<b class="fc"><i>76</i>&nbsp;        result.put(&quot;num_of_pages&quot;, num_of_pages);</b>
+<b class="fc"><i>77</i>&nbsp;        result.put(&quot;venues&quot;,venues);</b>
+<b class="fc"><i>78</i>&nbsp;        return new JsonResult(result,&quot;查询成功&quot;);</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    @ApiOperation(&quot;场馆关键字搜索&quot;)
+<i>82</i>&nbsp;    @ApiImplicitParams({ @ApiImplicitParam(name = &quot;name&quot;, value = &quot;关键词&quot;, required = true),
+<i>83</i>&nbsp;                         @ApiImplicitParam(name = &quot;segment&quot;, value = &quot;每页条数&quot;, required = true),
+<i>84</i>&nbsp;                         @ApiImplicitParam(name = &quot;page&quot;, value = &quot;待查询页号&quot;, required = true)})
+<i>85</i>&nbsp;    @GetMapping(value=&quot;/venue&quot;)
+<i>86</i>&nbsp;    public JsonResult getVenues(@RequestParam(&quot;name&quot;) String name,
+<i>87</i>&nbsp;                                @RequestParam(&quot;segment&quot;)Integer segment,
+<i>88</i>&nbsp;                                @RequestParam(&quot;page&quot;)Integer page){
+<b class="fc"><i>89</i>&nbsp;        ArrayList&lt;Venue&gt; pre_venues = venueService.getVenueByName(&quot;%&quot; + name + &quot;%&quot;);</b>
+<b class="fc"><i>90</i>&nbsp;        int num_of_pages = Math.max((int) Math.ceil(pre_venues.size() / (double) segment), 1);</b>
+<b class="fc"><i>91</i>&nbsp;        ArrayList&lt;VenueInList&gt; venues = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>92</i>&nbsp;        for(int i = Math.max(page * segment,0); i &lt; Math.min(page * segment + segment, pre_venues.size()); ++i){</b>
+<b class="fc"><i>93</i>&nbsp;            Venue v = pre_venues.get(i);</b>
+<b class="fc"><i>94</i>&nbsp;            venues.add(new VenueInList(v.getId(), v.getName(), v.getAddress(), v.getBeginTime(), v.getEndTime(), v.getIntroduction()));</b>
+<i>95</i>&nbsp;        }
+<b class="fc"><i>96</i>&nbsp;        Map&lt;String,Object&gt; result=new HashMap&lt;&gt;(segment);</b>
+<b class="fc"><i>97</i>&nbsp;        result.put(&quot;num_of_pages&quot;, num_of_pages);</b>
+<b class="fc"><i>98</i>&nbsp;        result.put(&quot;venues&quot;,venues);</b>
+<b class="fc"><i>99</i>&nbsp;        return new JsonResult(result,&quot;查询成功&quot;);</b>
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    @ApiOperation(&quot;查询场馆详情&quot;)
+<i>103</i>&nbsp;    @ApiImplicitParams({ @ApiImplicitParam(name = &quot;id&quot;, value = &quot;场馆id&quot;, required = true) })
+<i>104</i>&nbsp;    @GetMapping(value=&quot;/venue-detail&quot;)
+<i>105</i>&nbsp;    public JsonResult getVenueDetail(@RequestParam(&quot;id&quot;)Integer venueId){
+<b class="fc"><i>106</i>&nbsp;        return new JsonResult(venueService.getVenueDetail(venueId),&quot;查询成功！&quot;);</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    @ApiOperation(&quot;新增场馆&quot;)
+<i>110</i>&nbsp;    @PostMapping(value = &quot;/add-venue&quot;,consumes = &quot;multipart/form-data&quot;)
+<i>111</i>&nbsp;    public JsonResult addVenue(@RequestParam String name,
+<i>112</i>&nbsp;                               @RequestParam String address,
+<i>113</i>&nbsp;                               @RequestParam String introduction,
+<i>114</i>&nbsp;                               @RequestParam String phone,
+<i>115</i>&nbsp;                               @RequestParam String beginTime,
+<i>116</i>&nbsp;                               @RequestParam String endTime,
+<i>117</i>&nbsp;                               @RequestParam MultipartFile[] images){
+<b class="fc"><i>118</i>&nbsp;        Venue venue=new Venue();</b>
+<b class="fc"><i>119</i>&nbsp;        venue.setName(name);</b>
+<b class="fc"><i>120</i>&nbsp;        venue.setAddress(address);</b>
+<b class="fc"><i>121</i>&nbsp;        venue.setPhone(phone);</b>
+<b class="fc"><i>122</i>&nbsp;        venue.setIntroduction(introduction);</b>
+<i>123</i>&nbsp;        try{
+<b class="fc"><i>124</i>&nbsp;            venue.setBeginTime(timeFormat.parse(beginTime));</b>
+<b class="fc"><i>125</i>&nbsp;            venue.setEndTime(timeFormat.parse(endTime));</b>
+<b class="fc"><i>126</i>&nbsp;        }catch (ParseException p){</b>
+<b class="fc"><i>127</i>&nbsp;            p.printStackTrace();</b>
+<b class="fc"><i>128</i>&nbsp;            return new JsonResult(JsonResult.FAIL,&quot;日期格式错误&quot;);</b>
+<b class="fc"><i>129</i>&nbsp;        }</b>
+<b class="fc"><i>130</i>&nbsp;        venueDao.insert(venue);</b>
+<b class="fc"><i>131</i>&nbsp;        venue=venueDao.selectByVenueName(name).get(0);</b>
+<b class="fc"><i>132</i>&nbsp;        int venueId=venue.getId();</b>
+<b class="fc"><i>133</i>&nbsp;        for(MultipartFile image:images){</b>
+<b class="nc"><i>134</i>&nbsp;            VenueImage venueImage=new VenueImage();</b>
+<b class="nc"><i>135</i>&nbsp;            venueImage.setVenueId(venueId);</b>
+<b class="nc"><i>136</i>&nbsp;            String imageName= UUID.randomUUID().toString();</b>
+<b class="nc"><i>137</i>&nbsp;            venueImage.setImage(imageName);</b>
+<i>138</i>&nbsp;            try{
+<b class="nc"><i>139</i>&nbsp;                image.transferTo(new File(FilePathUtil.LOCAL_VENUE_COVER_PREFIX+imageName));</b>
+<b class="nc"><i>140</i>&nbsp;            } catch (IOException e) {</b>
+<b class="nc"><i>141</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>142</i>&nbsp;                return new JsonResult(JsonResult.FAIL,&quot;保存图片失败&quot;);</b>
+<b class="nc"><i>143</i>&nbsp;            }</b>
+<b class="nc"><i>144</i>&nbsp;            venueImageDao.insert(venueImage);</b>
+<i>145</i>&nbsp;        }
+<b class="fc"><i>146</i>&nbsp;        Map&lt;String,Object&gt; result=new HashMap&lt;&gt;(1);</b>
+<b class="fc"><i>147</i>&nbsp;        result.put(&quot;venueId&quot;,venueId);</b>
+<b class="fc"><i>148</i>&nbsp;        return new JsonResult(result,&quot;新增场馆成功！&quot;);</b>
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    @ApiOperation(&quot;更新场馆的文本信息&quot;)
+<i>152</i>&nbsp;    @PostMapping(&quot;/update-venue&quot;)
+<i>153</i>&nbsp;    public JsonResult updateVenue(@RequestParam int id,
+<i>154</i>&nbsp;                                  @RequestParam String name,
+<i>155</i>&nbsp;                                  @RequestParam String address,
+<i>156</i>&nbsp;                                  @RequestParam String introduction,
+<i>157</i>&nbsp;                                  @RequestParam String phone,
+<i>158</i>&nbsp;                                  @RequestParam String beginTime,
+<i>159</i>&nbsp;                                  @RequestParam String endTime) throws ParseException {
+<b class="fc"><i>160</i>&nbsp;        Venue venue=new Venue();</b>
+<b class="fc"><i>161</i>&nbsp;        venue.setId(id);</b>
+<b class="fc"><i>162</i>&nbsp;        venue.setName(name);</b>
+<b class="fc"><i>163</i>&nbsp;        venue.setAddress(address);</b>
+<b class="fc"><i>164</i>&nbsp;        venue.setPhone(phone);</b>
+<b class="fc"><i>165</i>&nbsp;        venue.setIntroduction(introduction);</b>
+<b class="fc"><i>166</i>&nbsp;        venue.setBeginTime(timeFormat.parse(beginTime));</b>
+<b class="fc"><i>167</i>&nbsp;        venue.setEndTime(timeFormat.parse(endTime));</b>
+<b class="fc"><i>168</i>&nbsp;        venueDao.updateByPrimaryKeySelective(venue);</b>
+<b class="fc"><i>169</i>&nbsp;        return new JsonResult();</b>
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    @ApiOperation(&quot;为某个场馆增加场地&quot;)
+<i>173</i>&nbsp;    @PostMapping(&quot;/add-site&quot;)
+<i>174</i>&nbsp;    public JsonResult addSite(@RequestParam int venueId,
+<i>175</i>&nbsp;                              @RequestParam String name,
+<i>176</i>&nbsp;                              @RequestParam String introduction,
+<i>177</i>&nbsp;                              @RequestParam MultipartFile image,
+<i>178</i>&nbsp;                              @RequestParam float price){
+<b class="nc"><i>179</i>&nbsp;        String imageName=UUID.randomUUID().toString();</b>
+<b class="nc"><i>180</i>&nbsp;        if(image!=null){</b>
+<i>181</i>&nbsp;            try{
+<b class="nc"><i>182</i>&nbsp;                image.transferTo(new File(FilePathUtil.LOCAL_SITE_IMAGE_PREFIX+imageName));</b>
+<b class="nc"><i>183</i>&nbsp;            } catch (IOException e) {</b>
+<b class="nc"><i>184</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>185</i>&nbsp;                return new JsonResult(JsonResult.FAIL,&quot;保存图片失败&quot;);</b>
+<b class="nc"><i>186</i>&nbsp;            }</b>
+<i>187</i>&nbsp;        }
+<b class="nc"><i>188</i>&nbsp;        Site site=new Site();</b>
+<b class="nc"><i>189</i>&nbsp;        site.setIntruction(introduction);</b>
+<b class="nc"><i>190</i>&nbsp;        site.setName(name);</b>
+<b class="nc"><i>191</i>&nbsp;        site.setVenueId(venueId);</b>
+<b class="nc"><i>192</i>&nbsp;        site.setPrice(price);</b>
+<b class="nc"><i>193</i>&nbsp;        site.setImage(imageName);</b>
+<b class="nc"><i>194</i>&nbsp;        siteDao.insert(site);</b>
+<b class="nc"><i>195</i>&nbsp;        return new JsonResult();</b>
+<i>196</i>&nbsp;    }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    @ApiOperation(&quot;更新场地信息&quot;)
+<i>199</i>&nbsp;    @PostMapping(&quot;/update-site&quot;)
+<i>200</i>&nbsp;    public JsonResult updateSite(@RequestParam int id,
+<i>201</i>&nbsp;                              @RequestParam(required = false) String name,
+<i>202</i>&nbsp;                              @RequestParam(required = false) String introduction,
+<i>203</i>&nbsp;                              @RequestParam(required = false) MultipartFile image,
+<i>204</i>&nbsp;                              @RequestParam(required = false) Float price){
+<b class="fc"><i>205</i>&nbsp;        String imageName=UUID.randomUUID().toString();</b>
+<b class="fc"><i>206</i>&nbsp;        Site site=siteDao.selectByPrimaryKey(id);</b>
+<b class="fc"><i>207</i>&nbsp;        if(image!=null){</b>
+<i>208</i>&nbsp;            try{
+<i>209</i>&nbsp;                //删除旧图片
+<b class="nc"><i>210</i>&nbsp;                String oldImage=site.getImage();</b>
+<b class="nc"><i>211</i>&nbsp;                File oldImageFile=new File(FilePathUtil.LOCAL_SITE_IMAGE_PREFIX+oldImage);</b>
+<b class="nc"><i>212</i>&nbsp;                if(oldImageFile.exists()){</b>
+<b class="nc"><i>213</i>&nbsp;                    if(!oldImageFile.delete()){</b>
+<b class="nc"><i>214</i>&nbsp;                        return new JsonResult(JsonResult.FAIL,&quot;删除旧图片失败&quot;);</b>
+<i>215</i>&nbsp;                    }
+<i>216</i>&nbsp;                }
+<b class="nc"><i>217</i>&nbsp;                image.transferTo(new File(FilePathUtil.LOCAL_SITE_IMAGE_PREFIX+imageName));</b>
+<b class="nc"><i>218</i>&nbsp;                site.setImage(imageName);</b>
+<b class="nc"><i>219</i>&nbsp;            } catch (IOException e) {</b>
+<b class="nc"><i>220</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>221</i>&nbsp;                return new JsonResult(JsonResult.FAIL,&quot;更新图片失败&quot;);</b>
+<b class="nc"><i>222</i>&nbsp;            }</b>
+<i>223</i>&nbsp;        }
+<b class="fc"><i>224</i>&nbsp;        site.setIntruction(introduction);</b>
+<b class="fc"><i>225</i>&nbsp;        site.setName(name);</b>
+<b class="fc"><i>226</i>&nbsp;        site.setPrice(price);</b>
+<b class="fc"><i>227</i>&nbsp;        siteDao.updateByPrimaryKeySelective(site);</b>
+<b class="fc"><i>228</i>&nbsp;        return new JsonResult();</b>
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    @ApiOperation(&quot;删除场地&quot;)
+<i>232</i>&nbsp;    @DeleteMapping(&quot;/delete-site&quot;)
+<i>233</i>&nbsp;    public JsonResult deleteSite(@RequestParam int id){
+<b class="fc"><i>234</i>&nbsp;        Site site=siteDao.selectByPrimaryKey(id);</b>
+<b class="fc"><i>235</i>&nbsp;        String imageName=site.getImage();</b>
+<b class="fc"><i>236</i>&nbsp;        File oldImageFile=new File(FilePathUtil.LOCAL_SITE_IMAGE_PREFIX+imageName);</b>
+<b class="fc"><i>237</i>&nbsp;        if(oldImageFile.exists()){</b>
+<b class="nc"><i>238</i>&nbsp;            if(!oldImageFile.delete()){</b>
+<b class="nc"><i>239</i>&nbsp;                return new JsonResult(JsonResult.FAIL,&quot;删除旧图片失败&quot;);</b>
+<i>240</i>&nbsp;            }
+<i>241</i>&nbsp;        }
+<b class="fc"><i>242</i>&nbsp;        siteDao.deleteByPrimaryKey(id);</b>
+<b class="fc"><i>243</i>&nbsp;        return new JsonResult();</b>
+<i>244</i>&nbsp;    }
+<i>245</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-01-02 20:19</div>
+</div>
+</body>
+</html>
