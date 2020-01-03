@@ -65,8 +65,4 @@ public class NewsService {
         return newsImageDao.insert(newsImageKey);
     }
 
-    public String getNewsCover(int newsId){
-        return FilePathUtil.URL_NEWS_IMAGE_PREFIX+newsImageDao.selectNewsCoverByNewsId(newsId);
-    }
-
 }
