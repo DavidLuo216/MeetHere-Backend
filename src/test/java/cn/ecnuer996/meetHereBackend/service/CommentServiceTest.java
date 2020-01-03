@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -38,8 +40,9 @@ public class CommentServiceTest {
 
     @Test
     void detectComment() {
-        when(commentDao.detectComment(anyInt())).thenReturn(null);
+        when(commentDao.detectComment(anyInt())).thenReturn(new ArrayList<>());
         commentService.deleteComment(1);
+        verify(commentDao, times(0)).detectComment(1);
     }
 
     @Test
