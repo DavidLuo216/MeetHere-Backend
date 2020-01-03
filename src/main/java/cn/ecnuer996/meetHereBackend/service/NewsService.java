@@ -35,24 +35,24 @@ public class NewsService {
         return newsDao.selectAllNews();
     }
 
-    public News getSingleNews(int newsId){
+    public News getSingleNews(int newsId) {
         return newsDao.selectByPrimaryKey(newsId);
     }
 
-    public List<String> getNewsImages(int newsId){
-        List<String> images=newsImageDao.selectNewsImagesByNewsId(newsId);
-        List<String> urls=new ArrayList<>();
-        for(String image:images){
-            urls.add(FilePathUtil.URL_NEWS_IMAGE_PREFIX+image);
+    public List<String> getNewsImages(int newsId) {
+        List<String> images = newsImageDao.selectNewsImagesByNewsId(newsId);
+        List<String> urls = new ArrayList<>();
+        for (String image : images) {
+            urls.add(FilePathUtil.URL_NEWS_IMAGE_PREFIX + image);
         }
         return urls;
     }
 
-    public News getNewsByTitle(String title){
+    public News getNewsByTitle(String title) {
         return newsDao.selectByTitle(title);
     }
 
-    public int addNewsImage(NewsImageKey newsImageKey){
+    public int addNewsImage(NewsImageKey newsImageKey) {
         return newsImageDao.insert(newsImageKey);
     }
 
